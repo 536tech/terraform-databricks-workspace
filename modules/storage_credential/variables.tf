@@ -36,15 +36,12 @@ variable "azure_managed_identity" {
 }
 
 variable "grants" {
-  description = "Direct grants on the storage credential. Shape: principal -> [privileges]."
-  type        = map(list(string))
-  default     = {}
-}
-
-variable "service_principal_application_ids" {
-  description = "Service principal application IDs keyed by readable alias."
-  type        = map(string)
-  default     = {}
+  description = "Direct credential grants. The list supports computed application IDs."
+  type = list(object({
+    principal  = string
+    privileges = list(string)
+  }))
+  default = []
 }
 
 variable "force_destroy" {

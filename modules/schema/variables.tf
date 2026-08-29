@@ -21,15 +21,12 @@ variable "comment" {
 }
 
 variable "grants" {
-  description = "Direct grants on the schema. Shape: principal -> [privileges]."
-  type        = map(list(string))
-  default     = {}
-}
-
-variable "service_principal_application_ids" {
-  description = "Service principal application IDs keyed by readable alias."
-  type        = map(string)
-  default     = {}
+  description = "Direct schema grants. A list permits computed service principal application IDs."
+  type = list(object({
+    principal  = string
+    privileges = list(string)
+  }))
+  default = []
 }
 
 variable "force_destroy" {

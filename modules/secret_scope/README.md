@@ -31,24 +31,43 @@ module "secret_scope" {
 }
 ```
 
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| terraform | >= 1.5.0 |
-| databricks/databricks | >= 1.128.0 |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
+| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
+
+## Providers
+
+| Name | Version |
+| ---- | ------- |
+| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+| ---- | ---- |
+| [databricks_secret_acl.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/secret_acl) | resource |
+| [databricks_secret_scope.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/secret_scope) | resource |
 
 ## Inputs
 
-| Name | Type | Description | Default | Required |
-|------|------|-------------|---------|:--------:|
-| `name` | `string` | Secret scope name. | `n/a` | yes |
-| `acls` | `map(string)` | Secret ACLs. Shape: principal -> permission (READ, WRITE, or MANAGE). | `null` | no |
-| `keyvault_metadata` | `object({ resource_id = string, dns_name = string })` | Azure Key Vault that backs the scope. | `null` | no |
+| Name | Description | Type | Default | Required |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_acls"></a> [acls](#input\_acls) | Secret ACLs. Shape: principal -> permission (READ, WRITE, or MANAGE). | `map(string)` | `null` | no |
+| <a name="input_keyvault_metadata"></a> [keyvault\_metadata](#input\_keyvault\_metadata) | Azure Key Vault that backs the scope. | <pre>object({<br/>    resource_id = string<br/>    dns_name    = string<br/>  })</pre> | `null` | no |
+| <a name="input_name"></a> [name](#input\_name) | Secret scope name. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
-| `id` | Secret scope id. |
-| `name` | Secret scope name. |
+| ---- | ----------- |
+| <a name="output_id"></a> [id](#output\_id) | Secret scope id. |
+| <a name="output_name"></a> [name](#output\_name) | Secret scope name. |
+<!-- END_TF_DOCS -->

@@ -19,8 +19,8 @@ variables {
 
   catalog_access = {
     sales = {
-      data-engineers = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
-      etl-sp         = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
+      data-engineers  = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
+      external-etl-sp = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
     }
   }
 
@@ -87,7 +87,7 @@ variables {
 
   external_location_access = {
     lake_raw = {
-      data-engineers = ["READ_FILES", "WRITE_FILES"]
+      etl-sp = ["READ_FILES", "WRITE_FILES"]
     }
   }
 
@@ -96,7 +96,7 @@ variables {
       libraries = []
       permissions = [{
         permission_level       = "CAN_USE"
-        service_principal_name = "etl-sp"
+        service_principal_name = "external-etl-sp"
       }]
       policy_family_definition_overrides = {
         "custom_tags.team" = {
@@ -281,11 +281,18 @@ run "golden_workspace_export" {
   }
 
   assert {
-    condition = (
-      local.service_principal_application_ids["external-etl-sp"] ==
-      "a1b2c3d4-0000-0000-0000-000000000001"
-    )
-    error_message = "The external service principal alias must resolve to its application ID."
+    condition = contains([
+      for grant in local.catalog_grants["sales"] : grant.principal
+    ], "a1b2c3d4-0000-0000-0000-000000000001")
+    error_message = "Catalog grants must resolve an external service principal alias."
+  }
+
+  assert {
+    condition = contains([
+      for permission in local.cluster_policy_permissions["Job Family Policy"] :
+      permission.service_principal_name
+    ], "a1b2c3d4-0000-0000-0000-000000000001")
+    error_message = "Policy permissions must resolve an external service principal alias."
   }
 }
 
