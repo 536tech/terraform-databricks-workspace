@@ -50,12 +50,6 @@ variable "grants" {
   default     = {}
 }
 
-variable "service_principal_application_ids" {
-  description = "Service principal application IDs keyed by readable alias."
-  type        = map(string)
-  default     = {}
-}
-
 variable "force_destroy" {
   description = "Allow Terraform to delete the location while tables still reference it."
   type        = bool

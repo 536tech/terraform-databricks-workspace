@@ -58,7 +58,6 @@ module "instance_pool" {
 | `custom_tags` | `map(string)` | Tags applied to pool instances. | `null` | no |
 | `azure_attributes` | `object({ availability = optional(string), spot_bid_max_price = optional(number) })` | Azure placement settings for pool instances. | `null` | no |
 | `permissions` | `list(object({ permission_level = string, group_name = optional(string), user_name = optional(string), service_principal_name = optional(string) }))` | Direct permissions on the pool. Each element names exactly one principal. | `[]` | no |
-| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 
 ## Outputs
 

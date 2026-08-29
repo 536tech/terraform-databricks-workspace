@@ -19,13 +19,9 @@ variables {
 
   catalog_access = {
     sales = {
-      data-engineers = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
-      etl-sp         = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
+      "a1b2c3d4-0000-0000-0000-000000000001" = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
+      "data-engineers"                       = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
     }
-  }
-
-  external_service_principals = {
-    external-etl-sp = "a1b2c3d4-0000-0000-0000-000000000001"
   }
 
   schemas = {
@@ -96,7 +92,7 @@ variables {
       libraries = []
       permissions = [{
         permission_level       = "CAN_USE"
-        service_principal_name = "etl-sp"
+        service_principal_name = "a1b2c3d4-0000-0000-0000-000000000001"
       }]
       policy_family_definition_overrides = {
         "custom_tags.team" = {
@@ -193,14 +189,14 @@ variables {
   }
 
   service_principals = {
-    dup-sp-1 = {
+    "dup-sp (a1b2c3d4-0000-0000-0000-000000000002)" = {
       allow_cluster_create       = false
       allow_instance_pool_create = false
       databricks_sql_access      = false
       display_name               = "dup-sp"
       workspace_access           = false
     }
-    dup-sp-2 = {
+    "dup-sp (a1b2c3d4-0000-0000-0000-000000000003)" = {
       allow_cluster_create       = true
       allow_instance_pool_create = false
       databricks_sql_access      = false
@@ -279,14 +275,6 @@ run "golden_workspace_export" {
     condition     = length(output.service_principal_ids) == 3
     error_message = "Every service principal must be exposed in service_principal_ids."
   }
-
-  assert {
-    condition = (
-      local.service_principal_application_ids["external-etl-sp"] ==
-      "a1b2c3d4-0000-0000-0000-000000000001"
-    )
-    error_message = "The external service principal alias must resolve to its application ID."
-  }
 }
 
 run "unity_catalog_only_export" {
@@ -320,22 +308,21 @@ run "no_inputs" {
   command = plan
 
   variables {
-    catalogs                    = {}
-    catalog_access              = {}
-    schemas                     = {}
-    schema_access               = {}
-    schema_storage_roots        = {}
-    schema_comments             = {}
-    storage_credentials         = {}
-    storage_credential_access   = {}
-    external_locations          = {}
-    external_location_access    = {}
-    external_service_principals = {}
-    cluster_policies            = {}
-    instance_pools              = {}
-    warehouses                  = {}
-    secret_scopes               = {}
-    service_principals          = {}
+    catalogs                  = {}
+    catalog_access            = {}
+    schemas                   = {}
+    schema_access             = {}
+    schema_storage_roots      = {}
+    schema_comments           = {}
+    storage_credentials       = {}
+    storage_credential_access = {}
+    external_locations        = {}
+    external_location_access  = {}
+    cluster_policies          = {}
+    instance_pools            = {}
+    warehouses                = {}
+    secret_scopes             = {}
+    service_principals        = {}
   }
 
   assert {

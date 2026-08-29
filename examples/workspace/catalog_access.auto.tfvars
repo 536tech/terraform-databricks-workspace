@@ -3,11 +3,11 @@
 # Review before importing.
 
 # Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].
-# Principals: groups/users by name or email; service principals by readable alias.
+# Principals: groups/users by name or email; service principals by application id.
 # Grants here are inherited by the catalog's schemas; do not repeat them in schema_access.
 catalog_access = {
   sales = {
-    data-engineers = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
-    etl-sp         = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
+    a1b2c3d4-0000-0000-0000-000000000001 = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
+    data-engineers                       = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
   }
 }

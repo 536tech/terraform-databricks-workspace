@@ -47,7 +47,6 @@ module "catalog" {
 | `storage_root` | `string` | Managed storage location for the catalog. Changing it replaces the catalog. | `null` | no |
 | `properties` | `map(string)` | Catalog properties. | `null` | no |
 | `grants` | `map(list(string))` | Direct grants on the catalog. Shape: principal -> [privileges]. | `{}` | no |
-| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the catalog while it still contains schemas. | `false` | no |
 
 ## Outputs

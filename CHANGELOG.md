@@ -13,12 +13,10 @@ change.
 
 ### Added
 
-- Root composition module with 16 inputs: `catalogs`, `catalog_access`, `schemas`,
+- Root composition module with 15 inputs: `catalogs`, `catalog_access`, `schemas`,
   `schema_access`, `schema_storage_roots`, `schema_comments`, `storage_credentials`,
   `storage_credential_access`, `external_locations`, `external_location_access`,
-  `cluster_policies`, `instance_pools`, `warehouses`, `secret_scopes`, `service_principals`,
-  `external_service_principals`.
-- Readable service principal aliases for grants and workspace permissions.
+  `cluster_policies`, `instance_pools`, `warehouses`, `secret_scopes`, `service_principals`.
 - Submodules `catalog`, `schema`, `storage_credential`, `external_location`, `cluster_policy`,
   `instance_pool`, `warehouse`, `secret_scope`, and `service_principal`.
 - Examples `examples/workspace` and `examples/shared`, each with the matching datatf golden

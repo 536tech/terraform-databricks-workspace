@@ -18,7 +18,7 @@ variable "catalogs" {
 variable "catalog_access" {
   description = <<-EOT
     Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].
-    Principals: groups/users by name or email; service principals by readable alias.
+    Principals: groups/users by name or email; service principals by application id.
   EOT
 
   type    = map(map(list(string)))
@@ -214,7 +214,7 @@ variable "secret_scopes" {
 
 variable "service_principals" {
   description = <<-EOT
-    Service principals. Key = readable alias; value = display name and entitlements.
+    Service principals. Key = display name; value = entitlements.
     workspace_consume is mutually exclusive with workspace_access and databricks_sql_access,
     so set it only when the principal has the consume-only entitlement.
   EOT
@@ -231,35 +231,24 @@ variable "service_principals" {
   default = {}
 }
 
-variable "external_service_principals" {
-  description = <<-EOT
-    Service principals managed by another Terraform root.
-    Key = readable alias; value = Databricks application ID.
-  EOT
-
-  type    = map(string)
-  default = {}
-}
-
 # Import target for the golden datatf export. The instance name must stay "workspace";
 # every import address that datatf writes starts with module.workspace.
 module "workspace" {
   source = "../../"
 
-  catalogs                    = var.catalogs
-  catalog_access              = var.catalog_access
-  schemas                     = var.schemas
-  schema_access               = var.schema_access
-  schema_storage_roots        = var.schema_storage_roots
-  schema_comments             = var.schema_comments
-  storage_credentials         = var.storage_credentials
-  storage_credential_access   = var.storage_credential_access
-  external_locations          = var.external_locations
-  external_location_access    = var.external_location_access
-  cluster_policies            = var.cluster_policies
-  instance_pools              = var.instance_pools
-  warehouses                  = var.warehouses
-  secret_scopes               = var.secret_scopes
-  service_principals          = var.service_principals
-  external_service_principals = var.external_service_principals
+  catalogs                  = var.catalogs
+  catalog_access            = var.catalog_access
+  schemas                   = var.schemas
+  schema_access             = var.schema_access
+  schema_storage_roots      = var.schema_storage_roots
+  schema_comments           = var.schema_comments
+  storage_credentials       = var.storage_credentials
+  storage_credential_access = var.storage_credential_access
+  external_locations        = var.external_locations
+  external_location_access  = var.external_location_access
+  cluster_policies          = var.cluster_policies
+  instance_pools            = var.instance_pools
+  warehouses                = var.warehouses
+  secret_scopes             = var.secret_scopes
+  service_principals        = var.service_principals
 }

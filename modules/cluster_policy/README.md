@@ -59,7 +59,6 @@ module "cluster_policy" {
 | `max_clusters_per_user` | `number` | Maximum number of clusters one user can start with this policy. | `null` | no |
 | `libraries` | `any` | Libraries installed on every cluster that uses the policy. Each element sets one of pypi, maven, cran, whl, jar, egg, or requirements. | `[]` | no |
 | `permissions` | `list(object({ permission_level = string, group_name = optional(string), user_name = optional(string), service_principal_name = optional(string) }))` | Direct permissions on the policy. Each element names exactly one principal. | `[]` | no |
-| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 
 ## Outputs
 

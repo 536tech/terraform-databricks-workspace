@@ -53,7 +53,6 @@ module "external_location" {
 | `enable_file_events` | `bool` | Turn on file events for the location. | `n/a` | yes |
 | `comment` | `string` | External location description. | `null` | no |
 | `grants` | `map(list(string))` | Direct grants on the external location. Shape: principal -> [privileges]. | `{}` | no |
-| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the location while tables still reference it. | `false` | no |
 
 ## Outputs

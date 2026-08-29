@@ -20,7 +20,7 @@ variable "catalogs" {
 variable "catalog_access" {
   description = <<-EOT
     Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].
-    Principals: groups/users by name or email; service principals by readable alias.
+    Principals: groups/users by name or email; service principals by application id.
   EOT
 
   type    = map(map(list(string)))
@@ -218,7 +218,7 @@ variable "secret_scopes" {
 
 variable "service_principals" {
   description = <<-EOT
-    Service principals. Key = readable alias; value = display name and entitlements.
+    Service principals. Key = display name; value = entitlements.
     workspace_consume is mutually exclusive with workspace_access and databricks_sql_access,
     so set it only when the principal has the consume-only entitlement.
   EOT
@@ -232,16 +232,6 @@ variable "service_principals" {
     workspace_consume          = optional(bool)
   }))
 
-  default = {}
-}
-
-variable "external_service_principals" {
-  description = <<-EOT
-    Service principals managed by another Terraform root.
-    Key = readable alias; value = Databricks application ID.
-  EOT
-
-  type    = map(string)
   default = {}
 }
 
