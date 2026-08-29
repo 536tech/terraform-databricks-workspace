@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
 
       - name: Install terraform-docs
-        uses: step-security/action-install-gh-release@fcc32674e8d9158ed77bb8ec6d54b7d49ed259b9 # v3.0.0
+        uses: jaxxstorm/action-install-gh-release@25e24d2d23ae098373794ef1d6faecb48ee52da8 # v3.0.0
         with:
           repo: terraform-docs/terraform-docs
           tag: v0.24.0
