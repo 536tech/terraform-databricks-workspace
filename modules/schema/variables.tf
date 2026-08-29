@@ -26,6 +26,12 @@ variable "grants" {
   default     = {}
 }
 
+variable "service_principal_application_ids" {
+  description = "Service principal application IDs keyed by readable alias."
+  type        = map(string)
+  default     = {}
+}
+
 variable "force_destroy" {
   description = "Allow Terraform to delete the schema while it still contains tables."
   type        = bool

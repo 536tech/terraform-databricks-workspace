@@ -50,6 +50,7 @@ module "storage_credential" {
 | `comment` | `string` | Storage credential description. | `null` | no |
 | `azure_managed_identity` | `object({ access_connector_id = string, managed_identity_id = optional(string) })` | Azure access connector that backs the credential. | `null` | no |
 | `grants` | `map(list(string))` | Direct grants on the storage credential. Shape: principal -> [privileges]. | `{}` | no |
+| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the credential while external locations still use it. | `false` | no |
 
 ## Outputs

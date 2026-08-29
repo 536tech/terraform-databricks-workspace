@@ -120,11 +120,11 @@ import {
 }
 
 import {
-  to = module.workspace.module.service_principal["dup-sp (a1b2c3d4-0000-0000-0000-000000000002)"].databricks_service_principal.this
+  to = module.workspace.module.service_principal["dup-sp-1"].databricks_service_principal.this
   id = "101"
 }
 
 import {
-  to = module.workspace.module.service_principal["dup-sp (a1b2c3d4-0000-0000-0000-000000000003)"].databricks_service_principal.this
+  to = module.workspace.module.service_principal["dup-sp-2"].databricks_service_principal.this
   id = "102"
 }
