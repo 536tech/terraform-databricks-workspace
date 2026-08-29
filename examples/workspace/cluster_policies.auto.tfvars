@@ -9,7 +9,7 @@ cluster_policies = {
     libraries = []
     permissions = [{
       permission_level       = "CAN_USE"
-      service_principal_name = "a1b2c3d4-0000-0000-0000-000000000001"
+      service_principal_name = "etl-sp"
     }]
     policy_family_definition_overrides = {
       "custom_tags.team" = {

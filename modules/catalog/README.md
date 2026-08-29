@@ -23,9 +23,10 @@ module "catalog" {
   comment        = "Sales domain"
   storage_root   = "abfss://sales@lake.dfs.core.windows.net/"
 
-  grants = {
-    data-engineers = ["USE_CATALOG", "USE_SCHEMA", "CREATE_SCHEMA"]
-  }
+  grants = [{
+    principal  = "data-engineers"
+    privileges = ["USE_CATALOG", "USE_SCHEMA", "CREATE_SCHEMA"]
+  }]
 }
 ```
 
@@ -46,7 +47,7 @@ module "catalog" {
 | `comment` | `string` | Catalog description. | `null` | no |
 | `storage_root` | `string` | Managed storage location for the catalog. Changing it replaces the catalog. | `null` | no |
 | `properties` | `map(string)` | Catalog properties. | `null` | no |
-| `grants` | `map(list(string))` | Direct grants on the catalog. Shape: principal -> [privileges]. | `{}` | no |
+| `grants` | `list(object({ principal = string, privileges = list(string) }))` | Direct catalog grants. A list permits computed service principal application IDs. | `[]` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the catalog while it still contains schemas. | `false` | no |
 
 ## Outputs

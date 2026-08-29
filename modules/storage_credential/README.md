@@ -26,9 +26,10 @@ module "storage_credential" {
     access_connector_id = "/subscriptions/.../accessConnectors/lake-ac"
   }
 
-  grants = {
-    data-platform-admins = ["ALL_PRIVILEGES"]
-  }
+  grants = [{
+    principal  = "data-platform-admins"
+    privileges = ["ALL_PRIVILEGES"]
+  }]
 }
 ```
 
@@ -49,7 +50,7 @@ module "storage_credential" {
 | `read_only` | `bool` | Limit the credential to read access. | `n/a` | yes |
 | `comment` | `string` | Storage credential description. | `null` | no |
 | `azure_managed_identity` | `object({ access_connector_id = string, managed_identity_id = optional(string) })` | Azure access connector that backs the credential. | `null` | no |
-| `grants` | `map(list(string))` | Direct grants on the storage credential. Shape: principal -> [privileges]. | `{}` | no |
+| `grants` | `list(object({ principal = string, privileges = list(string) }))` | Direct credential grants. The list supports computed application IDs. | `[]` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the credential while external locations still use it. | `false` | no |
 
 ## Outputs

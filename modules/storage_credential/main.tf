@@ -25,8 +25,8 @@ resource "databricks_grants" "this" {
     for_each = var.grants
 
     content {
-      principal  = grant.key
-      privileges = grant.value
+      principal  = grant.value.principal
+      privileges = grant.value.privileges
     }
   }
 }

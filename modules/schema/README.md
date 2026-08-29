@@ -21,9 +21,10 @@ module "schema" {
   name         = "bronze"
   comment      = "Raw landing"
 
-  grants = {
-    "ingest@example.com" = ["SELECT", "MODIFY"]
-  }
+  grants = [{
+    principal  = "ingest@example.com"
+    privileges = ["SELECT", "MODIFY"]
+  }]
 }
 ```
 
@@ -42,7 +43,7 @@ module "schema" {
 | `name` | `string` | Schema name. | `n/a` | yes |
 | `storage_root` | `string` | Managed storage location for the schema. Changing it replaces the schema. | `null` | no |
 | `comment` | `string` | Schema description. | `null` | no |
-| `grants` | `map(list(string))` | Direct grants on the schema. Shape: principal -> [privileges]. | `{}` | no |
+| `grants` | `list(object({ principal = string, privileges = list(string) }))` | Direct schema grants. A list permits computed service principal application IDs. | `[]` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the schema while it still contains tables. | `false` | no |
 
 ## Outputs

@@ -26,9 +26,10 @@ module "external_location" {
   fallback           = false
   enable_file_events = true
 
-  grants = {
-    data-engineers = ["READ_FILES", "WRITE_FILES"]
-  }
+  grants = [{
+    principal  = "data-engineers"
+    privileges = ["READ_FILES", "WRITE_FILES"]
+  }]
 }
 ```
 
@@ -52,7 +53,7 @@ module "external_location" {
 | `fallback` | `bool` | Let the workspace fall back to cluster credentials when the location has no access. | `n/a` | yes |
 | `enable_file_events` | `bool` | Turn on file events for the location. | `n/a` | yes |
 | `comment` | `string` | External location description. | `null` | no |
-| `grants` | `map(list(string))` | Direct grants on the external location. Shape: principal -> [privileges]. | `{}` | no |
+| `grants` | `list(object({ principal = string, privileges = list(string) }))` | Direct location grants. A list permits computed service principal application IDs. | `[]` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the location while tables still reference it. | `false` | no |
 
 ## Outputs

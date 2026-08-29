@@ -3,7 +3,7 @@
 # Review before importing.
 
 # Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].
-# Principals: groups/users by name or email; service principals by application id.
+# Principals: groups/users by name or email; service principals by readable alias.
 # Grants here are inherited by the catalog's schemas; do not repeat them in schema_access.
 catalog_access = {
   shared_ref = {
