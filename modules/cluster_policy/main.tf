@@ -55,10 +55,18 @@ resource "databricks_permissions" "this" {
     for_each = var.permissions
 
     content {
-      permission_level       = access_control.value.permission_level
-      group_name             = access_control.value.group_name
-      user_name              = access_control.value.user_name
-      service_principal_name = access_control.value.service_principal_name
+      permission_level = access_control.value.permission_level
+      group_name       = access_control.value.group_name
+      user_name        = access_control.value.user_name
+      service_principal_name = (
+        try(access_control.value.service_principal_name, null) == null
+        ? null
+        : lookup(
+          var.service_principal_application_ids,
+          access_control.value.service_principal_name,
+          access_control.value.service_principal_name
+        )
+      )
     }
   }
 }

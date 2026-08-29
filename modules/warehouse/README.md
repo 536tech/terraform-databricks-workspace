@@ -59,6 +59,7 @@ module "warehouse" {
 | `spot_instance_policy` | `string` | Spot policy: COST_OPTIMIZED or RELIABILITY_OPTIMIZED. | `null` | no |
 | `tags` | `map(string)` | Custom tags applied to the warehouse. | `null` | no |
 | `permissions` | `list(object({ permission_level = string, group_name = optional(string), user_name = optional(string), service_principal_name = optional(string) }))` | Direct permissions on the warehouse. Each element names exactly one principal. | `[]` | no |
+| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 
 ## Outputs
 

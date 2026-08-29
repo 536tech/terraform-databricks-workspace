@@ -62,3 +62,9 @@ variable "permissions" {
 
   default = []
 }
+
+variable "service_principal_application_ids" {
+  description = "Service principal application IDs keyed by readable alias."
+  type        = map(string)
+  default     = {}
+}

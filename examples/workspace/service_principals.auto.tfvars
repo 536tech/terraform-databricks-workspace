@@ -2,17 +2,17 @@
 # Unity Catalog includes only ISOLATED securables bound exclusively to this workspace.
 # Review before importing.
 
-# Service principals. Key = display name; value = entitlements.
+# Service principals. Key = readable alias; value = display name and entitlements.
 # Leave application_id unset for a new Databricks-managed one; Databricks generates it.
 service_principals = {
-  "dup-sp (a1b2c3d4-0000-0000-0000-000000000002)" = {
+  dup-sp-1 = {
     allow_cluster_create       = false
     allow_instance_pool_create = false
     databricks_sql_access      = false
     display_name               = "dup-sp"
     workspace_access           = false
   }
-  "dup-sp (a1b2c3d4-0000-0000-0000-000000000003)" = {
+  dup-sp-2 = {
     allow_cluster_create       = true
     allow_instance_pool_create = false
     databricks_sql_access      = false

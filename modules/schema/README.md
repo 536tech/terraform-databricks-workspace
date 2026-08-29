@@ -43,6 +43,7 @@ module "schema" {
 | `storage_root` | `string` | Managed storage location for the schema. Changing it replaces the schema. | `null` | no |
 | `comment` | `string` | Schema description. | `null` | no |
 | `grants` | `map(list(string))` | Direct grants on the schema. Shape: principal -> [privileges]. | `{}` | no |
+| `service_principal_application_ids` | `map(string)` | Service principal application IDs keyed by readable alias. | `{}` | no |
 | `force_destroy` | `bool` | Allow Terraform to delete the schema while it still contains tables. | `false` | no |
 
 ## Outputs

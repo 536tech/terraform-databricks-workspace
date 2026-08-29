@@ -17,7 +17,7 @@ resource "databricks_grants" "this" {
     for_each = var.grants
 
     content {
-      principal  = grant.key
+      principal  = lookup(var.service_principal_application_ids, grant.key, grant.key)
       privileges = grant.value
     }
   }
