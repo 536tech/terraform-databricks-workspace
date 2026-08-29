@@ -67,30 +67,73 @@ alone. See [`examples/shared`](examples/shared).
 4. Run `terraform apply`.
 5. Delete `imports.tf`.
 
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| terraform | >= 1.5.0 |
-| databricks/databricks | >= 1.128.0, < 2.0.0 |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
+| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
 
-The provider is workspace level. Configure it with `DATABRICKS_HOST` and a token, or with
-`DATABRICKS_CONFIG_PROFILE`. This repository has no account-level provider and manages no
-account-level objects.
+## Providers
+
+No providers.
 
 ## Modules
 
-| Name | Purpose |
-|------|---------|
-| [`catalog`](modules/catalog) | One Unity Catalog catalog and its grants |
-| [`schema`](modules/schema) | One schema and its grants |
-| [`storage_credential`](modules/storage_credential) | One storage credential and its grants |
-| [`external_location`](modules/external_location) | One external location and its grants |
-| [`cluster_policy`](modules/cluster_policy) | One cluster policy and its permissions |
-| [`instance_pool`](modules/instance_pool) | One instance pool and its permissions |
-| [`warehouse`](modules/warehouse) | One SQL warehouse and its permissions |
-| [`secret_scope`](modules/secret_scope) | One secret scope and its ACLs |
-| [`service_principal`](modules/service_principal) | One service principal and its entitlements |
+| Name | Source | Version |
+| ---- | ------ | ------- |
+| <a name="module_catalog"></a> [catalog](#module\_catalog) | ./modules/catalog | n/a |
+| <a name="module_cluster_policy"></a> [cluster\_policy](#module\_cluster\_policy) | ./modules/cluster_policy | n/a |
+| <a name="module_external_location"></a> [external\_location](#module\_external\_location) | ./modules/external_location | n/a |
+| <a name="module_instance_pool"></a> [instance\_pool](#module\_instance\_pool) | ./modules/instance_pool | n/a |
+| <a name="module_schema"></a> [schema](#module\_schema) | ./modules/schema | n/a |
+| <a name="module_secret_scope"></a> [secret\_scope](#module\_secret\_scope) | ./modules/secret_scope | n/a |
+| <a name="module_service_principal"></a> [service\_principal](#module\_service\_principal) | ./modules/service_principal | n/a |
+| <a name="module_storage_credential"></a> [storage\_credential](#module\_storage\_credential) | ./modules/storage_credential | n/a |
+| <a name="module_warehouse"></a> [warehouse](#module\_warehouse) | ./modules/warehouse | n/a |
+
+## Resources
+
+No resources.
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_catalog_access"></a> [catalog\_access](#input\_catalog\_access) | Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].<br/>Principals: groups/users by name or email; service principals by readable alias. | `map(map(list(string)))` | `{}` | no |
+| <a name="input_catalogs"></a> [catalogs](#input\_catalogs) | Catalogs to manage. Key = catalog name; value = catalog settings.<br/>A catalog must be declared here before its schemas or grants can be added. | <pre>map(object({<br/>    isolation_mode = string<br/>    owner          = string<br/>    comment        = optional(string)<br/>    storage_root   = optional(string)<br/>    properties     = optional(map(string))<br/>  }))</pre> | `{}` | no |
+| <a name="input_cluster_policies"></a> [cluster\_policies](#input\_cluster\_policies) | Cluster policies. Key = policy name; value = policy settings.<br/>Set exactly one of definition or policy\_family\_id. Permissions are nested inline.<br/><br/>The type is `any` rather than `map(object(...))` on purpose: definition,<br/>policy\_family\_definition\_overrides, and libraries hold arbitrary JSON, and Terraform<br/>cannot unify two map elements whose `any` attributes have different shapes.<br/>The validation blocks below enforce the parts of the shape that are fixed.<br/><br/>Per policy:<br/>  description                        optional string<br/>  definition                         optional object, encoded to JSON by the module<br/>  policy\_family\_id                   optional string<br/>  policy\_family\_definition\_overrides optional object, encoded to JSON by the module<br/>  max\_clusters\_per\_user              optional number<br/>  libraries                          list of objects, each one of pypi, maven, cran,<br/>                                     whl, jar, egg, or requirements<br/>  permissions                        list of objects with permission\_level and exactly<br/>                                     one of group\_name, user\_name,<br/>                                     service\_principal\_name | `any` | `{}` | no |
+| <a name="input_external_location_access"></a> [external\_location\_access](#input\_external\_location\_access) | Direct grants ON an external location. Shape: location name -> principal -> [privileges]. | `map(map(list(string)))` | `{}` | no |
+| <a name="input_external_locations"></a> [external\_locations](#input\_external\_locations) | External locations. Key = location name; value = settings including url and credential\_name.<br/>credential\_name can reference a credential managed here or an existing shared credential. | <pre>map(object({<br/>    url                = string<br/>    credential_name    = string<br/>    isolation_mode     = string<br/>    owner              = string<br/>    read_only          = bool<br/>    fallback           = bool<br/>    enable_file_events = bool<br/>    comment            = optional(string)<br/>  }))</pre> | `{}` | no |
+| <a name="input_external_service_principals"></a> [external\_service\_principals](#input\_external\_service\_principals) | Service principals managed by another Terraform root.<br/>Key = readable alias; value = Databricks application ID. | `map(string)` | `{}` | no |
+| <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Allow Terraform to delete Unity Catalog securables that still contain objects. | `bool` | `false` | no |
+| <a name="input_instance_pools"></a> [instance\_pools](#input\_instance\_pools) | Instance pools. Key = pool name; value = pool settings. | <pre>map(object({<br/>    node_type_id                          = string<br/>    min_idle_instances                    = number<br/>    idle_instance_autotermination_minutes = number<br/>    enable_elastic_disk                   = bool<br/>    preloaded_spark_versions              = list(string)<br/>    max_capacity                          = optional(number)<br/>    custom_tags                           = optional(map(string))<br/>    azure_attributes = optional(object({<br/>      availability       = optional(string)<br/>      spot_bid_max_price = optional(number)<br/>    }))<br/>    permissions = list(object({<br/>      permission_level       = string<br/>      group_name             = optional(string)<br/>      user_name              = optional(string)<br/>      service_principal_name = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
+| <a name="input_schema_access"></a> [schema\_access](#input\_schema\_access) | Direct grants ON a schema. Shape: catalog -> schema -> principal -> [privileges]. | `map(map(map(list(string))))` | `{}` | no |
+| <a name="input_schema_comments"></a> [schema\_comments](#input\_schema\_comments) | Schema descriptions. Shape: catalog -> schema -> comment. | `map(map(string))` | `{}` | no |
+| <a name="input_schema_storage_roots"></a> [schema\_storage\_roots](#input\_schema\_storage\_roots) | Custom managed storage location per schema. Shape: catalog -> schema -> URL. | `map(map(string))` | `{}` | no |
+| <a name="input_schemas"></a> [schemas](#input\_schemas) | Schemas to manage. Key = catalog name; value = list of schema names in that catalog.<br/>The catalog key must also exist in `catalogs`. An empty list manages the catalog only. | `map(list(string))` | `{}` | no |
+| <a name="input_secret_scopes"></a> [secret\_scopes](#input\_secret\_scopes) | Secret scopes (prefer Key Vault-backed). Key = scope name; value = settings.<br/>ACLs are nested inline under acls: principal -> permission. Do not put secret values here. | <pre>map(object({<br/>    acls = optional(map(string))<br/>    keyvault_metadata = optional(object({<br/>      resource_id = string<br/>      dns_name    = string<br/>    }))<br/>  }))</pre> | `{}` | no |
+| <a name="input_service_principals"></a> [service\_principals](#input\_service\_principals) | Service principals. Key = readable alias; value = display name and entitlements.<br/>workspace\_consume is mutually exclusive with workspace\_access and databricks\_sql\_access,<br/>so set it only when the principal has the consume-only entitlement. | <pre>map(object({<br/>    allow_cluster_create       = bool<br/>    allow_instance_pool_create = bool<br/>    databricks_sql_access      = bool<br/>    workspace_access           = bool<br/>    display_name               = optional(string)<br/>    workspace_consume          = optional(bool)<br/>  }))</pre> | `{}` | no |
+| <a name="input_storage_credential_access"></a> [storage\_credential\_access](#input\_storage\_credential\_access) | Direct grants ON a storage credential. Shape: credential name -> principal -> [privileges]. | `map(map(list(string)))` | `{}` | no |
+| <a name="input_storage_credentials"></a> [storage\_credentials](#input\_storage\_credentials) | Unity Catalog storage credentials. Key = credential name; value = settings<br/>(for Azure, an azure\_managed\_identity that references an existing access connector). | <pre>map(object({<br/>    isolation_mode = string<br/>    owner          = string<br/>    read_only      = bool<br/>    comment        = optional(string)<br/>    azure_managed_identity = optional(object({<br/>      access_connector_id = string<br/>      managed_identity_id = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
+| <a name="input_warehouses"></a> [warehouses](#input\_warehouses) | SQL warehouses. Key = warehouse name; value = warehouse settings. | <pre>map(object({<br/>    cluster_size              = string<br/>    min_num_clusters          = number<br/>    max_num_clusters          = number<br/>    auto_stop_mins            = number<br/>    warehouse_type            = string<br/>    enable_photon             = bool<br/>    enable_serverless_compute = bool<br/>    spot_instance_policy      = optional(string)<br/>    tags                      = optional(map(string))<br/>    permissions = list(object({<br/>      permission_level       = string<br/>      group_name             = optional(string)<br/>      user_name              = optional(string)<br/>      service_principal_name = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_catalog_ids"></a> [catalog\_ids](#output\_catalog\_ids) | Managed catalogs. Key = catalog name; value = catalog id. |
+| <a name="output_cluster_policy_ids"></a> [cluster\_policy\_ids](#output\_cluster\_policy\_ids) | Managed cluster policies. Key = policy name; value = policy id. |
+| <a name="output_external_location_ids"></a> [external\_location\_ids](#output\_external\_location\_ids) | Managed external locations. Key = location name; value = location id. |
+| <a name="output_instance_pool_ids"></a> [instance\_pool\_ids](#output\_instance\_pool\_ids) | Managed instance pools. Key = pool name; value = pool id. |
+| <a name="output_schema_ids"></a> [schema\_ids](#output\_schema\_ids) | Managed schemas. Key = "<catalog>.<schema>"; value = schema id. |
+| <a name="output_secret_scope_ids"></a> [secret\_scope\_ids](#output\_secret\_scope\_ids) | Managed secret scopes. Key = scope name; value = scope id. |
+| <a name="output_service_principal_application_ids"></a> [service\_principal\_application\_ids](#output\_service\_principal\_application\_ids) | Managed service principals. Key = tfvars key; value = application id. |
+| <a name="output_service_principal_ids"></a> [service\_principal\_ids](#output\_service\_principal\_ids) | Managed service principals. Key = tfvars key; value = service principal id. |
+| <a name="output_storage_credential_ids"></a> [storage\_credential\_ids](#output\_storage\_credential\_ids) | Managed storage credentials. Key = credential name; value = credential id. |
+| <a name="output_warehouse_ids"></a> [warehouse\_ids](#output\_warehouse\_ids) | Managed SQL warehouses. Key = warehouse name; value = warehouse id. |
+<!-- END_TF_DOCS -->
 
 ## Tests
 
@@ -104,6 +147,10 @@ export. It asserts the module instance count for every kind, so a change that br
 address fails the test.
 
 ## Notes on types
+
+The provider is workspace level. Configure it with `DATABRICKS_HOST` and a token, or with
+`DATABRICKS_CONFIG_PROFILE`. This repository has no account-level provider and manages no
+account-level objects.
 
 `cluster_policies` is typed `any`, not `map(object(...))`. Its `definition`,
 `policy_family_definition_overrides`, and `libraries` fields hold arbitrary JSON, and Terraform
@@ -123,40 +170,3 @@ not aliases pass through unchanged for users and groups.
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
-
-## Inputs
-
-| Name | Type | Description | Default | Required |
-|------|------|-------------|---------|:--------:|
-| `catalogs` | `map(object({ isolation_mode = string, owner = string, comment = optional(string), storage_root = optional(string), properties = optional(map(string)) }))` | Catalogs to manage. Key = catalog name; value = catalog settings. A catalog must be declared here before its schemas or grants can be added. | `{}` | no |
-| `catalog_access` | `map(map(list(string)))` | Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges]. Principals: groups/users by name or email; service principals by readable alias. | `{}` | no |
-| `schemas` | `map(list(string))` | Schemas to manage. Key = catalog name; value = list of schema names in that catalog. The catalog key must also exist in `catalogs`. An empty list manages the catalog only. | `{}` | no |
-| `schema_access` | `map(map(map(list(string))))` | Direct grants ON a schema. Shape: catalog -> schema -> principal -> [privileges]. | `{}` | no |
-| `schema_storage_roots` | `map(map(string))` | Custom managed storage location per schema. Shape: catalog -> schema -> URL. | `{}` | no |
-| `schema_comments` | `map(map(string))` | Schema descriptions. Shape: catalog -> schema -> comment. | `{}` | no |
-| `storage_credentials` | `map(object({ isolation_mode = string, owner = string, read_only = bool, comment = optional(string), azure_managed_identity = optional(object({ access_connector_id = string, managed_identity_id = optional(string) })) }))` | Unity Catalog storage credentials. Key = credential name; value = settings (for Azure, an azure_managed_identity that references an existing access connector). | `{}` | no |
-| `storage_credential_access` | `map(map(list(string)))` | Direct grants ON a storage credential. Shape: credential name -> principal -> [privileges]. | `{}` | no |
-| `external_locations` | `map(object({ url = string, credential_name = string, isolation_mode = string, owner = string, read_only = bool, fallback = bool, enable_file_events = bool, comment = optional(string) }))` | External locations. Key = location name; value = settings including url and credential_name. credential_name can reference a credential managed here or an existing shared credential. | `{}` | no |
-| `external_location_access` | `map(map(list(string)))` | Direct grants ON an external location. Shape: location name -> principal -> [privileges]. | `{}` | no |
-| `cluster_policies` | `any` | Cluster policies. Key = policy name; value = policy settings. Set exactly one of definition or policy_family_id. Permissions are nested inline. See `variables.tf` for the full shape and the reason the type is `any`. | `{}` | no |
-| `instance_pools` | `map(object({ node_type_id = string, min_idle_instances = number, idle_instance_autotermination_minutes = number, enable_elastic_disk = bool, preloaded_spark_versions = list(string), max_capacity = optional(number), custom_tags = optional(map(string)), azure_attributes = optional(object({ availability = optional(string), spot_bid_max_price = optional(number) })), permissions = list(object({ permission_level = string, group_name = optional(string), user_name = optional(string), service_principal_name = optional(string) })) }))` | Instance pools. Key = pool name; value = pool settings. | `{}` | no |
-| `warehouses` | `map(object({ cluster_size = string, min_num_clusters = number, max_num_clusters = number, auto_stop_mins = number, warehouse_type = string, enable_photon = bool, enable_serverless_compute = bool, spot_instance_policy = optional(string), tags = optional(map(string)), permissions = list(object({ permission_level = string, group_name = optional(string), user_name = optional(string), service_principal_name = optional(string) })) }))` | SQL warehouses. Key = warehouse name; value = warehouse settings. | `{}` | no |
-| `secret_scopes` | `map(object({ acls = optional(map(string)), keyvault_metadata = optional(object({ resource_id = string, dns_name = string })) }))` | Secret scopes (prefer Key Vault-backed). Key = scope name; value = settings. ACLs are nested inline under acls: principal -> permission. Do not put secret values here. | `{}` | no |
-| `service_principals` | `map(object({ allow_cluster_create = bool, allow_instance_pool_create = bool, databricks_sql_access = bool, workspace_access = bool, display_name = optional(string), workspace_consume = optional(bool) }))` | Service principals. Key = readable alias; value = display name and entitlements. workspace_consume is mutually exclusive with workspace_access and databricks_sql_access, so set it only when the principal has the consume-only entitlement. | `{}` | no |
-| `external_service_principals` | `map(string)` | Service principals managed by another Terraform root. Key = readable alias; value = Databricks application ID. | `{}` | no |
-| `force_destroy` | `bool` | Allow Terraform to delete Unity Catalog securables that still contain objects. | `false` | no |
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| `catalog_ids` | Managed catalogs. Key = catalog name; value = catalog id. |
-| `schema_ids` | Managed schemas. Key = "<catalog>.<schema>"; value = schema id. |
-| `storage_credential_ids` | Managed storage credentials. Key = credential name; value = credential id. |
-| `external_location_ids` | Managed external locations. Key = location name; value = location id. |
-| `cluster_policy_ids` | Managed cluster policies. Key = policy name; value = policy id. |
-| `instance_pool_ids` | Managed instance pools. Key = pool name; value = pool id. |
-| `warehouse_ids` | Managed SQL warehouses. Key = warehouse name; value = warehouse id. |
-| `secret_scope_ids` | Managed secret scopes. Key = scope name; value = scope id. |
-| `service_principal_ids` | Managed service principals. Key = tfvars key; value = service principal id. |
-| `service_principal_application_ids` | Managed service principals. Key = tfvars key; value = application id. |

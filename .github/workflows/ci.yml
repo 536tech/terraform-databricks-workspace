@@ -23,6 +23,23 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Install terraform-docs
+        env:
+          TERRAFORM_DOCS_SHA256: 9005daf969de0b50134493a2c00078b49f5f5b39d021cda7c89bf4d4f3d776d3
+          TERRAFORM_DOCS_VERSION: v0.24.0
+        run: |
+          set -euo pipefail
+          archive="terraform-docs-${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz"
+          url="https://github.com/terraform-docs/terraform-docs/releases/download"
+          curl --fail --location --silent --show-error \
+            "${url}/${TERRAFORM_DOCS_VERSION}/${archive}" --output "${archive}"
+          echo "${TERRAFORM_DOCS_SHA256}  ${archive}" | sha256sum --check
+          tar --extract --gzip --file "${archive}" terraform-docs
+          sudo install terraform-docs /usr/local/bin/terraform-docs
+
+      - name: Run pre-commit hooks
+        uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
