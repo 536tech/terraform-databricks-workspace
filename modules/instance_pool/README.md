@@ -41,14 +41,14 @@ module "instance_pool" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
 
 ## Modules
@@ -58,14 +58,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [databricks_instance_pool.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/instance_pool) | resource |
 | [databricks_permissions.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/permissions) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_azure_attributes"></a> [azure\_attributes](#input\_azure\_attributes) | Azure placement settings for pool instances. | <pre>object({<br/>    availability       = optional(string)<br/>    spot_bid_max_price = optional(number)<br/>  })</pre> | `null` | no |
 | <a name="input_custom_tags"></a> [custom\_tags](#input\_custom\_tags) | Tags applied to pool instances. | `map(string)` | `null` | no |
 | <a name="input_enable_elastic_disk"></a> [enable\_elastic\_disk](#input\_enable\_elastic\_disk) | Add disk space to pool instances when they run low. | `bool` | n/a | yes |
@@ -80,7 +80,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | Instance pool id. |
 | <a name="output_name"></a> [name](#output\_name) | Instance pool name. |
 <!-- END_TF_DOCS -->

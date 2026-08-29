@@ -37,14 +37,14 @@ module "storage_credential" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
 
 ## Modules
@@ -54,14 +54,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [databricks_grants.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/grants) | resource |
 | [databricks_storage_credential.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/storage_credential) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_azure_managed_identity"></a> [azure\_managed\_identity](#input\_azure\_managed\_identity) | Azure access connector that backs the credential. | <pre>object({<br/>    access_connector_id = string<br/>    managed_identity_id = optional(string)<br/>  })</pre> | `null` | no |
 | <a name="input_comment"></a> [comment](#input\_comment) | Storage credential description. | `string` | `null` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Allow Terraform to delete the credential while external locations still use it. | `bool` | `false` | no |
@@ -74,7 +74,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | Storage credential id. |
 | <a name="output_name"></a> [name](#output\_name) | Storage credential name. |
 <!-- END_TF_DOCS -->

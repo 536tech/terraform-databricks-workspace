@@ -71,7 +71,7 @@ alone. See [`examples/shared`](examples/shared).
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
 
@@ -82,7 +82,7 @@ No providers.
 ## Modules
 
 | Name | Source | Version |
-| ---- | ------ | ------- |
+|------|--------|---------|
 | <a name="module_catalog"></a> [catalog](#module\_catalog) | ./modules/catalog | n/a |
 | <a name="module_cluster_policy"></a> [cluster\_policy](#module\_cluster\_policy) | ./modules/cluster_policy | n/a |
 | <a name="module_external_location"></a> [external\_location](#module\_external\_location) | ./modules/external_location | n/a |
@@ -100,7 +100,7 @@ No resources.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_catalog_access"></a> [catalog\_access](#input\_catalog\_access) | Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].<br/>Principals: groups/users by name or email; service principals by readable alias. | `map(map(list(string)))` | `{}` | no |
 | <a name="input_catalogs"></a> [catalogs](#input\_catalogs) | Catalogs to manage. Key = catalog name; value = catalog settings.<br/>A catalog must be declared here before its schemas or grants can be added. | <pre>map(object({<br/>    isolation_mode = string<br/>    owner          = string<br/>    comment        = optional(string)<br/>    storage_root   = optional(string)<br/>    properties     = optional(map(string))<br/>  }))</pre> | `{}` | no |
 | <a name="input_cluster_policies"></a> [cluster\_policies](#input\_cluster\_policies) | Cluster policies. Key = policy name; value = policy settings.<br/>Set exactly one of definition or policy\_family\_id. Permissions are nested inline.<br/><br/>The type is `any` rather than `map(object(...))` on purpose: definition,<br/>policy\_family\_definition\_overrides, and libraries hold arbitrary JSON, and Terraform<br/>cannot unify two map elements whose `any` attributes have different shapes.<br/>The validation blocks below enforce the parts of the shape that are fixed.<br/><br/>Per policy:<br/>  description                        optional string<br/>  definition                         optional object, encoded to JSON by the module<br/>  policy\_family\_id                   optional string<br/>  policy\_family\_definition\_overrides optional object, encoded to JSON by the module<br/>  max\_clusters\_per\_user              optional number<br/>  libraries                          list of objects, each one of pypi, maven, cran,<br/>                                     whl, jar, egg, or requirements<br/>  permissions                        list of objects with permission\_level and exactly<br/>                                     one of group\_name, user\_name,<br/>                                     service\_principal\_name | `any` | `{}` | no |
@@ -122,7 +122,7 @@ No resources.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_catalog_ids"></a> [catalog\_ids](#output\_catalog\_ids) | Managed catalogs. Key = catalog name; value = catalog id. |
 | <a name="output_cluster_policy_ids"></a> [cluster\_policy\_ids](#output\_cluster\_policy\_ids) | Managed cluster policies. Key = policy name; value = policy id. |
 | <a name="output_external_location_ids"></a> [external\_location\_ids](#output\_external\_location\_ids) | Managed external locations. Key = location name; value = location id. |

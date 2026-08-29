@@ -37,14 +37,14 @@ module "external_location" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
 
 ## Modules
@@ -54,14 +54,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [databricks_external_location.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/external_location) | resource |
 | [databricks_grants.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/grants) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_comment"></a> [comment](#input\_comment) | External location description. | `string` | `null` | no |
 | <a name="input_credential_name"></a> [credential\_name](#input\_credential\_name) | Storage credential that grants access to the URL. | `string` | n/a | yes |
 | <a name="input_enable_file_events"></a> [enable\_file\_events](#input\_enable\_file\_events) | Turn on file events for the location. | `bool` | n/a | yes |
@@ -77,7 +77,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | External location id. |
 | <a name="output_name"></a> [name](#output\_name) | External location name. |
 | <a name="output_url"></a> [url](#output\_url) | External location URL. |
