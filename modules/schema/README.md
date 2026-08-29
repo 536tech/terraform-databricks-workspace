@@ -32,14 +32,14 @@ module "schema" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
 
 ## Modules
@@ -49,14 +49,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [databricks_grants.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/grants) | resource |
 | [databricks_schema.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/schema) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_catalog_name"></a> [catalog\_name](#input\_catalog\_name) | Name of the catalog that holds the schema. | `string` | n/a | yes |
 | <a name="input_comment"></a> [comment](#input\_comment) | Schema description. | `string` | `null` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Allow Terraform to delete the schema while it still contains tables. | `bool` | `false` | no |
@@ -67,7 +67,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | Schema id, in the form "<catalog>.<schema>". |
 | <a name="output_name"></a> [name](#output\_name) | Schema name. |
 <!-- END_TF_DOCS -->
