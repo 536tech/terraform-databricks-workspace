@@ -14,7 +14,7 @@ resource "databricks_external_location" "this" {
 resource "databricks_grants" "this" {
   count = length(var.grants) > 0 ? 1 : 0
 
-  external_location = databricks_external_location.this.id
+  external_location = databricks_external_location.this.name
 
   dynamic "grant" {
     for_each = var.grants

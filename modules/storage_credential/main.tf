@@ -19,7 +19,7 @@ resource "databricks_storage_credential" "this" {
 resource "databricks_grants" "this" {
   count = length(var.grants) > 0 ? 1 : 0
 
-  storage_credential = databricks_storage_credential.this.id
+  storage_credential = databricks_storage_credential.this.name
 
   dynamic "grant" {
     for_each = var.grants
