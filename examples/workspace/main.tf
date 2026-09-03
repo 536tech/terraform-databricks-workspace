@@ -105,6 +105,11 @@ variable "external_location_access" {
   default     = {}
 }
 
+variable "workspace_bindings" {
+  type    = any
+  default = {}
+}
+
 variable "cluster_policies" {
   description = <<-EOT
     Cluster policies. Key = policy name; value = policy settings.
@@ -256,6 +261,7 @@ module "workspace" {
   storage_credential_access   = var.storage_credential_access
   external_locations          = var.external_locations
   external_location_access    = var.external_location_access
+  workspace_bindings          = var.workspace_bindings
   cluster_policies            = var.cluster_policies
   instance_pools              = var.instance_pools
   warehouses                  = var.warehouses

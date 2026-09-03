@@ -56,8 +56,14 @@ variables {
   storage_credentials = {
     lake_cred = {
       azure_managed_identity = {
-        access_connector_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Databricks/accessConnectors/lake-ac"
-        managed_identity_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/lake-mi"
+        access_connector_id = join("", [
+          "/subscriptions/sub/resourceGroups/rg/providers/",
+          "Microsoft.Databricks/accessConnectors/lake-ac",
+        ])
+        managed_identity_id = join("", [
+          "/subscriptions/sub/resourceGroups/rg/providers/",
+          "Microsoft.ManagedIdentity/userAssignedIdentities/lake-mi",
+        ])
       }
       comment        = "Lake access connector"
       isolation_mode = "ISOLATION_MODE_ISOLATED"
@@ -88,6 +94,27 @@ variables {
   external_location_access = {
     lake_raw = {
       etl-sp = ["READ_FILES", "WRITE_FILES"]
+    }
+  }
+
+  workspace_bindings = {
+    "1111|catalog|sales" = {
+      binding_type   = "BINDING_TYPE_READ_WRITE"
+      securable_name = "sales"
+      securable_type = "catalog"
+      workspace_id   = 1111
+    }
+    "1111|external_location|lake_raw" = {
+      binding_type   = "BINDING_TYPE_READ_WRITE"
+      securable_name = "lake_raw"
+      securable_type = "external_location"
+      workspace_id   = 1111
+    }
+    "1111|storage_credential|lake_cred" = {
+      binding_type   = "BINDING_TYPE_READ_WRITE"
+      securable_name = "lake_cred"
+      securable_type = "storage_credential"
+      workspace_id   = 1111
     }
   }
 
@@ -186,8 +213,11 @@ variables {
         data-engineers = "READ"
       }
       keyvault_metadata = {
-        dns_name    = "https://kv-data.vault.azure.net/"
-        resource_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.KeyVault/vaults/kv-data"
+        dns_name = "https://kv-data.vault.azure.net/"
+        resource_id = join("", [
+          "/subscriptions/sub/resourceGroups/rg/providers/",
+          "Microsoft.KeyVault/vaults/kv-data",
+        ])
       }
     }
   }
@@ -246,12 +276,20 @@ run "golden_workspace_export" {
   }
 
   assert {
+    condition     = length(module.workspace_binding) == 3
+    error_message = "Expected 3 workspace binding module instances."
+  }
+
+  assert {
     condition     = length(module.cluster_policy) == 2
     error_message = "Expected 2 cluster policy module instances."
   }
 
   assert {
-    condition     = sort(keys(module.cluster_policy)) == tolist(["Job Family Policy", "Team Policy"])
+    condition = sort(keys(module.cluster_policy)) == tolist([
+      "Job Family Policy",
+      "Team Policy",
+    ])
     error_message = "Cluster policy module keys must be the policy names."
   }
 
@@ -318,7 +356,12 @@ run "unity_catalog_only_export" {
   }
 
   assert {
-    condition     = length(module.instance_pool) == 0 && length(module.warehouse) == 0 && length(module.secret_scope) == 0 && length(module.service_principal) == 0
+    condition = (
+      length(module.instance_pool) == 0 &&
+      length(module.warehouse) == 0 &&
+      length(module.secret_scope) == 0 &&
+      length(module.service_principal) == 0
+    )
     error_message = "A Unity Catalog only export must create no workspace-native modules."
   }
 }
@@ -343,6 +386,7 @@ run "no_inputs" {
     warehouses                  = {}
     secret_scopes               = {}
     service_principals          = {}
+    workspace_bindings          = {}
   }
 
   assert {
@@ -388,6 +432,7 @@ run "securable_without_grants" {
     warehouses                = {}
     secret_scopes             = {}
     service_principals        = {}
+    workspace_bindings        = {}
   }
 
   assert {
@@ -399,4 +444,21 @@ run "securable_without_grants" {
     condition     = length(module.schema) == 1
     error_message = "A schema with no entry in schema_access must still be managed."
   }
+}
+
+run "invalid_workspace_binding" {
+  command = plan
+
+  variables {
+    workspace_bindings = {
+      invalid = {
+        binding_type   = "BINDING_TYPE_READ_ONLY"
+        securable_name = "lake_cred"
+        securable_type = "storage_credential"
+        workspace_id   = 1111
+      }
+    }
+  }
+
+  expect_failures = [var.workspace_bindings]
 }

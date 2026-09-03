@@ -76,7 +76,10 @@ variable "storage_credentials" {
 }
 
 variable "storage_credential_access" {
-  description = "Direct grants ON a storage credential. Shape: credential name -> principal -> [privileges]."
+  description = <<-EOT
+    Direct grants ON a storage credential.
+    Shape: credential name -> principal -> [privileges].
+  EOT
   type        = map(map(list(string)))
   default     = {}
 }
@@ -102,9 +105,71 @@ variable "external_locations" {
 }
 
 variable "external_location_access" {
-  description = "Direct grants ON an external location. Shape: location name -> principal -> [privileges]."
+  description = <<-EOT
+    Direct grants ON an external location.
+    Shape: location name -> principal -> [privileges].
+  EOT
   type        = map(map(list(string)))
   default     = {}
+}
+
+variable "workspace_bindings" {
+  description = <<-EOT
+    Unity Catalog workspace bindings. The map key is the provider import ID:
+    <workspace_id>|<securable_type>|<securable_name>.
+  EOT
+
+  type = map(object({
+    workspace_id   = number
+    securable_name = string
+    securable_type = string
+    binding_type   = string
+  }))
+
+  default = {}
+
+  validation {
+    condition = alltrue([
+      for key, binding in var.workspace_bindings :
+      key == format(
+        "%d|%s|%s",
+        binding.workspace_id,
+        binding.securable_type,
+        binding.securable_name,
+      )
+    ])
+    error_message = "Each workspace binding key must equal its provider import ID."
+  }
+
+  validation {
+    condition = alltrue([
+      for binding in var.workspace_bindings :
+      contains(["catalog", "external_location", "storage_credential"], binding.securable_type)
+    ])
+    error_message = <<-EOT
+      A workspace binding securable type must be catalog, external_location,
+      or storage_credential.
+    EOT
+  }
+
+  validation {
+    condition = alltrue([
+      for binding in var.workspace_bindings :
+      contains(["BINDING_TYPE_READ_ONLY", "BINDING_TYPE_READ_WRITE"], binding.binding_type)
+    ])
+    error_message = <<-EOT
+      A workspace binding type must be BINDING_TYPE_READ_ONLY or
+      BINDING_TYPE_READ_WRITE.
+    EOT
+  }
+
+  validation {
+    condition = alltrue([
+      for binding in var.workspace_bindings :
+      binding.binding_type == "BINDING_TYPE_READ_WRITE" || binding.securable_type == "catalog"
+    ])
+    error_message = "Only a catalog can have a read-only workspace binding."
+  }
 }
 
 # Workspace-native inputs.
@@ -136,7 +201,9 @@ variable "cluster_policies" {
   default = {}
 
   validation {
-    condition     = alltrue([for name, policy in var.cluster_policies : can(tolist(policy.permissions))])
+    condition = alltrue([
+      for name, policy in var.cluster_policies : can(tolist(policy.permissions))
+    ])
     error_message = "Every cluster policy needs a permissions list. Use [] when it has none."
   }
 

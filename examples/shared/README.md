@@ -5,9 +5,9 @@ This root manages the Unity Catalog securables that are shared: the `OPEN` ones,
 objects.
 
 There is no separate "shared" module. This example calls the same composition module as
-[`examples/workspace`](../workspace) and passes only the ten Unity Catalog inputs. The five
-workspace-native inputs default to `{}`, so no cluster policy, instance pool, warehouse, secret
-scope, or service principal is created.
+[`examples/workspace`](../workspace) and passes only Unity Catalog inputs. Workspace-native
+inputs default to `{}`. The root creates no cluster policy, instance pool, warehouse, secret
+scope, or service principal.
 
 The module instance is still named `workspace`. datatf writes `module.workspace.*` import
 addresses for both scopes, so the name is fixed for the shared root too:
@@ -19,7 +19,7 @@ import {
 }
 ```
 
-The files in this directory are the datatf golden shared export, copied verbatim.
+The files in this directory use the DataTF fake workspace fixtures.
 
 ## Run it
 
@@ -28,14 +28,14 @@ export DATABRICKS_HOST=https://adb-0000.0.azuredatabricks.net
 export DATABRICKS_TOKEN=...
 
 terraform init
-terraform plan
+terraform plan -out=tfplan
+terraform show tfplan
 ```
 
 The plan must show imports only.
 
 ```console
-terraform apply
-rm imports.tf
+terraform apply tfplan
 ```
 
 ## Grants and count gating

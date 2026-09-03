@@ -25,6 +25,16 @@ import {
 }
 
 import {
+  to = module.workspace.module.workspace_binding["1111|storage_credential|shared_cred"].databricks_workspace_binding.this
+  id = "1111|storage_credential|shared_cred"
+}
+
+import {
+  to = module.workspace.module.workspace_binding["2222|storage_credential|shared_cred"].databricks_workspace_binding.this
+  id = "2222|storage_credential|shared_cred"
+}
+
+import {
   to = module.workspace.module.storage_credential["shared_cred"].databricks_grants.this[0]
   id = "storage_credential/shared_cred"
 }

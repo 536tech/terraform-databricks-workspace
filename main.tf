@@ -59,6 +59,18 @@ module "external_location" {
   depends_on = [module.storage_credential]
 }
 
+module "workspace_binding" {
+  source   = "./modules/workspace_binding"
+  for_each = var.workspace_bindings
+
+  workspace_id   = each.value.workspace_id
+  securable_name = each.value.securable_name
+  securable_type = each.value.securable_type
+  binding_type   = each.value.binding_type
+
+  depends_on = [module.catalog, module.storage_credential, module.external_location]
+}
+
 module "cluster_policy" {
   source   = "./modules/cluster_policy"
   for_each = var.cluster_policies
