@@ -19,13 +19,16 @@ import {
 }
 ```
 
-The files in this directory use the DataTF fake workspace fixtures.
+The files in this directory use the DataTF fake workspace fixtures:
+
+- `terraform.tfvars` contains all exported variable values.
+- `imports.tf` contains the matching import blocks.
 
 ## Run it
 
 ```console
-export DATABRICKS_HOST=https://adb-0000.0.azuredatabricks.net
-export DATABRICKS_TOKEN=...
+databricks auth profiles
+export DATABRICKS_CONFIG_PROFILE=<profile>
 
 terraform init
 terraform plan -out=tfplan
