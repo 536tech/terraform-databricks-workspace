@@ -76,7 +76,10 @@ variable "storage_credentials" {
 }
 
 variable "storage_credential_access" {
-  description = "Direct grants ON a storage credential. Shape: credential name -> principal -> [privileges]."
+  description = <<-EOT
+    Direct grants ON a storage credential.
+    Shape: credential name -> principal -> [privileges].
+  EOT
   type        = map(map(list(string)))
   default     = {}
 }
@@ -102,9 +105,71 @@ variable "external_locations" {
 }
 
 variable "external_location_access" {
-  description = "Direct grants ON an external location. Shape: location name -> principal -> [privileges]."
+  description = <<-EOT
+    Direct grants ON an external location.
+    Shape: location name -> principal -> [privileges].
+  EOT
   type        = map(map(list(string)))
   default     = {}
+}
+
+variable "workspace_bindings" {
+  description = <<-EOT
+    Unity Catalog workspace bindings. The map key is the provider import ID:
+    <workspace_id>|<securable_type>|<securable_name>.
+  EOT
+
+  type = map(object({
+    workspace_id   = number
+    securable_name = string
+    securable_type = string
+    binding_type   = string
+  }))
+
+  default = {}
+
+  validation {
+    condition = alltrue([
+      for key, binding in var.workspace_bindings :
+      key == format(
+        "%d|%s|%s",
+        binding.workspace_id,
+        binding.securable_type,
+        binding.securable_name,
+      )
+    ])
+    error_message = "Each workspace binding key must equal its provider import ID."
+  }
+
+  validation {
+    condition = alltrue([
+      for binding in var.workspace_bindings :
+      contains(["catalog", "external_location", "storage_credential"], binding.securable_type)
+    ])
+    error_message = <<-EOT
+      A workspace binding securable type must be catalog, external_location,
+      or storage_credential.
+    EOT
+  }
+
+  validation {
+    condition = alltrue([
+      for binding in var.workspace_bindings :
+      contains(["BINDING_TYPE_READ_ONLY", "BINDING_TYPE_READ_WRITE"], binding.binding_type)
+    ])
+    error_message = <<-EOT
+      A workspace binding type must be BINDING_TYPE_READ_ONLY or
+      BINDING_TYPE_READ_WRITE.
+    EOT
+  }
+
+  validation {
+    condition = alltrue([
+      for binding in var.workspace_bindings :
+      binding.binding_type == "BINDING_TYPE_READ_WRITE" || binding.securable_type == "catalog"
+    ])
+    error_message = "Only a catalog can have a read-only workspace binding."
+  }
 }
 
 # Workspace-native inputs.
@@ -136,7 +201,9 @@ variable "cluster_policies" {
   default = {}
 
   validation {
-    condition     = alltrue([for name, policy in var.cluster_policies : can(tolist(policy.permissions))])
+    condition = alltrue([
+      for name, policy in var.cluster_policies : can(tolist(policy.permissions))
+    ])
     error_message = "Every cluster policy needs a permissions list. Use [] when it has none."
   }
 
@@ -243,6 +310,73 @@ variable "external_service_principals" {
 
   type    = map(string)
   default = {}
+}
+
+variable "workspace_permission_assignments" {
+  description = <<-EOT
+    Account identities assigned to this workspace. The map key is the principal ID.
+    Optional service principal entitlements use the same workspace provider.
+  EOT
+
+  type = map(object({
+    principal_id           = number
+    permissions            = list(string)
+    user_name              = optional(string)
+    group_name             = optional(string)
+    service_principal_name = optional(string)
+    service_principal_entitlements = optional(object({
+      allow_cluster_create       = optional(bool, false)
+      allow_instance_pool_create = optional(bool, false)
+      databricks_sql_access      = optional(bool, false)
+      workspace_access           = optional(bool, false)
+      workspace_consume          = optional(bool, false)
+    }))
+  }))
+
+  default = {}
+
+  validation {
+    condition = alltrue([
+      for key, assignment in var.workspace_permission_assignments :
+      key == tostring(assignment.principal_id)
+    ])
+    error_message = "Each workspace permission assignment key must equal its principal ID."
+  }
+
+  validation {
+    condition = alltrue([
+      for assignment in var.workspace_permission_assignments :
+      length(compact([
+        assignment.user_name,
+        assignment.group_name,
+        assignment.service_principal_name,
+      ])) <= 1
+    ])
+    error_message = "Set no more than one identity name on a workspace permission assignment."
+  }
+
+  validation {
+    condition = alltrue([
+      for assignment in var.workspace_permission_assignments :
+      length(assignment.permissions) > 0 && alltrue([
+        for permission in assignment.permissions : contains(["ADMIN", "USER"], permission)
+      ])
+    ])
+    error_message = "Workspace permissions must contain ADMIN or USER."
+  }
+
+  validation {
+    condition = alltrue([
+      for assignment in var.workspace_permission_assignments :
+      assignment.service_principal_entitlements == null ||
+      !assignment.service_principal_entitlements.workspace_consume ||
+      (
+        !assignment.service_principal_entitlements.workspace_access &&
+        !assignment.service_principal_entitlements.databricks_sql_access
+      )
+    ])
+    error_message = "workspace_consume conflicts with workspace_access and databricks_sql_access."
+  }
 }
 
 # Module behaviour.

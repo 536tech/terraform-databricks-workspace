@@ -10,6 +10,11 @@ import {
 }
 
 import {
+  to = module.workspace.module.workspace_binding["1111|catalog|sales"].databricks_workspace_binding.this
+  id = "1111|catalog|sales"
+}
+
+import {
   to = module.workspace.module.catalog["sales"].databricks_grants.this[0]
   id = "catalog/sales"
 }
@@ -35,6 +40,11 @@ import {
 }
 
 import {
+  to = module.workspace.module.workspace_binding["1111|storage_credential|lake_cred"].databricks_workspace_binding.this
+  id = "1111|storage_credential|lake_cred"
+}
+
+import {
   to = module.workspace.module.storage_credential["lake_cred"].databricks_grants.this[0]
   id = "storage_credential/lake_cred"
 }
@@ -42,6 +52,11 @@ import {
 import {
   to = module.workspace.module.external_location["lake_raw"].databricks_external_location.this
   id = "lake_raw"
+}
+
+import {
+  to = module.workspace.module.workspace_binding["1111|external_location|lake_raw"].databricks_workspace_binding.this
+  id = "1111|external_location|lake_raw"
 }
 
 import {
@@ -115,8 +130,23 @@ import {
 }
 
 import {
-  to = module.workspace.module.service_principal["etl-sp"].databricks_service_principal.this
+  to = module.workspace.module.workspace_permission_assignment["100"].databricks_permission_assignment.this
   id = "100"
+}
+
+import {
+  to = module.workspace.module.workspace_permission_assignment["100"].databricks_entitlements.this[0]
+  id = "spn/100"
+}
+
+import {
+  to = module.workspace.module.workspace_permission_assignment["200"].databricks_permission_assignment.this
+  id = "200"
+}
+
+import {
+  to = module.workspace.module.workspace_permission_assignment["300"].databricks_permission_assignment.this
+  id = "300"
 }
 
 import {

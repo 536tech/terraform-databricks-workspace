@@ -105,6 +105,11 @@ variable "external_location_access" {
   default     = {}
 }
 
+variable "workspace_bindings" {
+  type    = any
+  default = {}
+}
+
 variable "external_service_principals" {
   description = <<-EOT
     Service principals managed by another Terraform root.
@@ -131,5 +136,6 @@ module "workspace" {
   storage_credential_access   = var.storage_credential_access
   external_locations          = var.external_locations
   external_location_access    = var.external_location_access
+  workspace_bindings          = var.workspace_bindings
   external_service_principals = var.external_service_principals
 }

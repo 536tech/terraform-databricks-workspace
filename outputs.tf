@@ -18,6 +18,11 @@ output "external_location_ids" {
   value       = { for name, m in module.external_location : name => m.id }
 }
 
+output "workspace_binding_ids" {
+  description = "Managed workspace bindings. Key = provider import ID; value = resource ID."
+  value       = { for key, m in module.workspace_binding : key => m.id }
+}
+
 output "cluster_policy_ids" {
   description = "Managed cluster policies. Key = policy name; value = policy id."
   value       = { for name, m in module.cluster_policy : name => m.id }
@@ -46,4 +51,9 @@ output "service_principal_ids" {
 output "service_principal_application_ids" {
   description = "Managed service principals. Key = tfvars key; value = application id."
   value       = { for key, m in module.service_principal : key => m.application_id }
+}
+
+output "workspace_permission_assignment_ids" {
+  description = "Workspace identity assignments. Key = principal ID; value = resource ID."
+  value       = { for key, m in module.workspace_permission_assignment : key => m.id }
 }
