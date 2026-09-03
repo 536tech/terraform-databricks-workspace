@@ -1,7 +1,7 @@
 # Workspace scope example
 
-This root imports and then manages one workspace. It includes its Unity Catalog securables,
-workspace bindings, and workspace-native objects.
+This root imports and then manages the supported platform configuration for one workspace.
+It includes supported Unity Catalog objects and workspace configuration.
 
 The files in this directory use the DataTF fake workspace fixtures:
 

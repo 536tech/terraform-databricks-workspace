@@ -1,7 +1,7 @@
 # terraform-databricks-workspace
 
-Terraform modules that manage an Azure Databricks workspace: Unity Catalog securables plus the
-workspace-native objects around them.
+This Terraform composition module manages the platform configuration that DataTF supports inside
+an existing Azure Databricks workspace.
 
 The root module is a composition module. It reads 17 input maps and creates one child module
 instance per object. The child module instance names and `for_each` keys are a contract:
@@ -24,6 +24,9 @@ modules without a major version bump.
 | `module.warehouse["<name>"]` | `databricks_sql_endpoint.this`, `databricks_permissions.this[0]` |
 | `module.secret_scope["<name>"]` | `databricks_secret_scope.this`, `databricks_secret_acl.this["<principal>"]` |
 | `module.service_principal["<key>"]` | `databricks_service_principal.this` |
+
+This table is the module boundary. The module does not create an Azure workspace, metastore,
+account identity, job, pipeline, notebook, model, stored data object, or secret value.
 
 `databricks_grants.this` and `databricks_permissions.this` use `count`. The count is 1 only when
 the matching access or permissions input is not empty, so the `[0]` index in an import address is
