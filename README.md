@@ -3,7 +3,7 @@
 Terraform modules that manage an Azure Databricks workspace: Unity Catalog securables plus the
 workspace-native objects around them.
 
-The root module is a composition module. It reads 18 input maps and creates one child module
+The root module is a composition module. It reads 17 input maps and creates one child module
 instance per object. The child module instance names and `for_each` keys are a contract:
 [datatf](https://github.com/536tech/datatf) exports a live workspace into `terraform.tfvars` and a
 matching `imports.tf`, and every import address it writes points at one of the resources listed
@@ -24,7 +24,6 @@ modules without a major version bump.
 | `module.warehouse["<name>"]` | `databricks_sql_endpoint.this`, `databricks_permissions.this[0]` |
 | `module.secret_scope["<name>"]` | `databricks_secret_scope.this`, `databricks_secret_acl.this["<principal>"]` |
 | `module.service_principal["<key>"]` | `databricks_service_principal.this` |
-| `module.workspace_permission_assignment["<principal-id>"]` | `databricks_permission_assignment.this`, `databricks_entitlements.this[0]` |
 
 `databricks_grants.this` and `databricks_permissions.this` use `count`. The count is 1 only when
 the matching access or permissions input is not empty, so the `[0]` index in an import address is
@@ -97,7 +96,6 @@ No providers.
 | <a name="module_storage_credential"></a> [storage\_credential](#module\_storage\_credential) | ./modules/storage_credential | n/a |
 | <a name="module_warehouse"></a> [warehouse](#module\_warehouse) | ./modules/warehouse | n/a |
 | <a name="module_workspace_binding"></a> [workspace\_binding](#module\_workspace\_binding) | ./modules/workspace_binding | n/a |
-| <a name="module_workspace_permission_assignment"></a> [workspace\_permission\_assignment](#module\_workspace\_permission\_assignment) | ./modules/workspace_permission_assignment | n/a |
 
 ## Resources
 
@@ -125,7 +123,6 @@ No resources.
 | <a name="input_storage_credentials"></a> [storage\_credentials](#input\_storage\_credentials) | Unity Catalog storage credentials. Key = credential name; value = settings<br/>(for Azure, an azure\_managed\_identity that references an existing access connector). | <pre>map(object({<br/>    isolation_mode = string<br/>    owner          = string<br/>    read_only      = bool<br/>    comment        = optional(string)<br/>    azure_managed_identity = optional(object({<br/>      access_connector_id = string<br/>      managed_identity_id = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
 | <a name="input_warehouses"></a> [warehouses](#input\_warehouses) | SQL warehouses. Key = warehouse name; value = warehouse settings. | <pre>map(object({<br/>    cluster_size              = string<br/>    min_num_clusters          = number<br/>    max_num_clusters          = number<br/>    auto_stop_mins            = number<br/>    warehouse_type            = string<br/>    enable_photon             = bool<br/>    enable_serverless_compute = bool<br/>    spot_instance_policy      = optional(string)<br/>    tags                      = optional(map(string))<br/>    permissions = list(object({<br/>      permission_level       = string<br/>      group_name             = optional(string)<br/>      user_name              = optional(string)<br/>      service_principal_name = optional(string)<br/>    }))<br/>  }))</pre> | `{}` | no |
 | <a name="input_workspace_bindings"></a> [workspace\_bindings](#input\_workspace\_bindings) | Unity Catalog workspace bindings. The map key is the provider import ID:<br/><workspace\_id>\|<securable\_type>\|<securable\_name>. | <pre>map(object({<br/>    workspace_id   = number<br/>    securable_name = string<br/>    securable_type = string<br/>    binding_type   = string<br/>  }))</pre> | `{}` | no |
-| <a name="input_workspace_permission_assignments"></a> [workspace\_permission\_assignments](#input\_workspace\_permission\_assignments) | Account identities assigned to this workspace. The map key is the principal ID.<br/>Optional service principal entitlements use the same workspace provider. | <pre>map(object({<br/>    principal_id           = number<br/>    permissions            = list(string)<br/>    user_name              = optional(string)<br/>    group_name             = optional(string)<br/>    service_principal_name = optional(string)<br/>    service_principal_entitlements = optional(object({<br/>      allow_cluster_create       = optional(bool, false)<br/>      allow_instance_pool_create = optional(bool, false)<br/>      databricks_sql_access      = optional(bool, false)<br/>      workspace_access           = optional(bool, false)<br/>      workspace_consume          = optional(bool, false)<br/>    }))<br/>  }))</pre> | `{}` | no |
 
 ## Outputs
 
@@ -142,7 +139,6 @@ No resources.
 | <a name="output_storage_credential_ids"></a> [storage\_credential\_ids](#output\_storage\_credential\_ids) | Managed storage credentials. Key = credential name; value = credential id. |
 | <a name="output_warehouse_ids"></a> [warehouse\_ids](#output\_warehouse\_ids) | Managed SQL warehouses. Key = warehouse name; value = warehouse id. |
 | <a name="output_workspace_binding_ids"></a> [workspace\_binding\_ids](#output\_workspace\_binding\_ids) | Managed workspace bindings. Key = provider import ID; value = resource ID. |
-| <a name="output_workspace_permission_assignment_ids"></a> [workspace\_permission\_assignment\_ids](#output\_workspace\_permission\_assignment\_ids) | Workspace identity assignments. Key = principal ID; value = resource ID. |
 <!-- END_TF_DOCS -->
 
 ## Tests
@@ -164,10 +160,6 @@ account-level objects.
 
 `workspace_bindings` stays with the Unity Catalog securable that it restricts. A shared root can
 therefore own a multi-workspace binding through one designated workspace provider.
-
-`workspace_permission_assignments` assigns existing account users, groups, and service principals
-to one workspace. It does not create those account identities. Its optional entitlement block
-preserves service principal entitlements through the same workspace provider.
 
 `cluster_policies` is typed `any`, not `map(object(...))`. Its `definition`,
 `policy_family_definition_overrides`, and `libraries` fields hold arbitrary JSON, and Terraform

@@ -52,8 +52,3 @@ output "service_principal_application_ids" {
   description = "Managed service principals. Key = tfvars key; value = application id."
   value       = { for key, m in module.service_principal : key => m.application_id }
 }
-
-output "workspace_permission_assignment_ids" {
-  description = "Workspace identity assignments. Key = principal ID; value = resource ID."
-  value       = { for key, m in module.workspace_permission_assignment : key => m.id }
-}

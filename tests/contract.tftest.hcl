@@ -238,27 +238,11 @@ variables {
       workspace_access           = false
       workspace_consume          = true
     }
-  }
-
-  workspace_permission_assignments = {
-    "100" = {
-      permissions            = ["USER"]
-      principal_id           = 100
-      service_principal_name = "a1b2c3d4-0000-0000-0000-000000000001"
-      service_principal_entitlements = {
-        databricks_sql_access = true
-        workspace_access      = true
-      }
-    }
-    "200" = {
-      permissions  = ["ADMIN"]
-      principal_id = 200
-      user_name    = "jon@example.com"
-    }
-    "300" = {
-      permissions  = ["USER"]
-      principal_id = 300
-      group_name   = "data-engineers"
+    etl-sp = {
+      allow_cluster_create       = false
+      allow_instance_pool_create = false
+      databricks_sql_access      = true
+      workspace_access           = true
     }
   }
 }
@@ -325,18 +309,13 @@ run "golden_workspace_export" {
   }
 
   assert {
-    condition     = length(module.service_principal) == 2
-    error_message = "Expected 2 workspace-local service principal module instances."
+    condition     = length(module.service_principal) == 3
+    error_message = "Expected 3 service principal module instances."
   }
 
   assert {
-    condition     = length(output.service_principal_ids) == 2
+    condition     = length(output.service_principal_ids) == 3
     error_message = "Every service principal must be exposed in service_principal_ids."
-  }
-
-  assert {
-    condition     = length(module.workspace_permission_assignment) == 3
-    error_message = "Expected 3 workspace permission assignment module instances."
   }
 
   assert {
@@ -359,12 +338,11 @@ run "unity_catalog_only_export" {
   command = plan
 
   variables {
-    cluster_policies                 = {}
-    instance_pools                   = {}
-    warehouses                       = {}
-    secret_scopes                    = {}
-    service_principals               = {}
-    workspace_permission_assignments = {}
+    cluster_policies   = {}
+    instance_pools     = {}
+    warehouses         = {}
+    secret_scopes      = {}
+    service_principals = {}
   }
 
   assert {
@@ -392,24 +370,23 @@ run "no_inputs" {
   command = plan
 
   variables {
-    catalogs                         = {}
-    catalog_access                   = {}
-    schemas                          = {}
-    schema_access                    = {}
-    schema_storage_roots             = {}
-    schema_comments                  = {}
-    storage_credentials              = {}
-    storage_credential_access        = {}
-    external_locations               = {}
-    external_location_access         = {}
-    external_service_principals      = {}
-    cluster_policies                 = {}
-    instance_pools                   = {}
-    warehouses                       = {}
-    secret_scopes                    = {}
-    service_principals               = {}
-    workspace_bindings               = {}
-    workspace_permission_assignments = {}
+    catalogs                    = {}
+    catalog_access              = {}
+    schemas                     = {}
+    schema_access               = {}
+    schema_storage_roots        = {}
+    schema_comments             = {}
+    storage_credentials         = {}
+    storage_credential_access   = {}
+    external_locations          = {}
+    external_location_access    = {}
+    external_service_principals = {}
+    cluster_policies            = {}
+    instance_pools              = {}
+    warehouses                  = {}
+    secret_scopes               = {}
+    service_principals          = {}
+    workspace_bindings          = {}
   }
 
   assert {
@@ -443,20 +420,19 @@ run "securable_without_grants" {
       granted = ["bronze"]
     }
 
-    schema_access                    = {}
-    schema_storage_roots             = {}
-    schema_comments                  = {}
-    storage_credentials              = {}
-    storage_credential_access        = {}
-    external_locations               = {}
-    external_location_access         = {}
-    cluster_policies                 = {}
-    instance_pools                   = {}
-    warehouses                       = {}
-    secret_scopes                    = {}
-    service_principals               = {}
-    workspace_bindings               = {}
-    workspace_permission_assignments = {}
+    schema_access             = {}
+    schema_storage_roots      = {}
+    schema_comments           = {}
+    storage_credentials       = {}
+    storage_credential_access = {}
+    external_locations        = {}
+    external_location_access  = {}
+    cluster_policies          = {}
+    instance_pools            = {}
+    warehouses                = {}
+    secret_scopes             = {}
+    service_principals        = {}
+    workspace_bindings        = {}
   }
 
   assert {
@@ -470,7 +446,7 @@ run "securable_without_grants" {
   }
 }
 
-run "invalid_platform_contract" {
+run "invalid_workspace_binding" {
   command = plan
 
   variables {
@@ -482,16 +458,7 @@ run "invalid_platform_contract" {
         workspace_id   = 1111
       }
     }
-    workspace_permission_assignments = {
-      invalid = {
-        permissions  = ["OWNER"]
-        principal_id = 100
-      }
-    }
   }
 
-  expect_failures = [
-    var.workspace_bindings,
-    var.workspace_permission_assignments,
-  ]
+  expect_failures = [var.workspace_bindings]
 }

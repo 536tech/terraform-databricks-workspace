@@ -139,15 +139,3 @@ module "service_principal" {
   workspace_access           = each.value.workspace_access
   workspace_consume          = each.value.workspace_consume
 }
-
-module "workspace_permission_assignment" {
-  source   = "./modules/workspace_permission_assignment"
-  for_each = var.workspace_permission_assignments
-
-  principal_id                   = each.value.principal_id
-  permissions                    = each.value.permissions
-  user_name                      = each.value.user_name
-  group_name                     = each.value.group_name
-  service_principal_name         = each.value.service_principal_name
-  service_principal_entitlements = each.value.service_principal_entitlements
-}

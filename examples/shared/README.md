@@ -7,7 +7,7 @@ objects.
 There is no separate "shared" module. This example calls the same composition module as
 [`examples/workspace`](../workspace) and passes only Unity Catalog inputs. Workspace-native
 inputs default to `{}`. The root creates no cluster policy, instance pool, warehouse, secret
-scope, service principal, or identity assignment.
+scope, or service principal.
 
 The module instance is still named `workspace`. datatf writes `module.workspace.*` import
 addresses for both scopes, so the name is fixed for the shared root too:

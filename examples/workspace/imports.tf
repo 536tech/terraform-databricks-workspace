@@ -130,23 +130,8 @@ import {
 }
 
 import {
-  to = module.workspace.module.workspace_permission_assignment["100"].databricks_permission_assignment.this
+  to = module.workspace.module.service_principal["etl-sp"].databricks_service_principal.this
   id = "100"
-}
-
-import {
-  to = module.workspace.module.workspace_permission_assignment["100"].databricks_entitlements.this[0]
-  id = "spn/100"
-}
-
-import {
-  to = module.workspace.module.workspace_permission_assignment["200"].databricks_permission_assignment.this
-  id = "200"
-}
-
-import {
-  to = module.workspace.module.workspace_permission_assignment["300"].databricks_permission_assignment.this
-  id = "300"
 }
 
 import {
