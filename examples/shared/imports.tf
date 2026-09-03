@@ -5,41 +5,58 @@
 # access map is populated, mirroring the modules' count-gating.
 
 import {
-  to = module.workspace.module.catalog["shared_ref"].databricks_catalog.this
-  id = "shared_ref"
+  for_each = {
+    shared_ref = "shared_ref"
+  }
+  to = module.workspace.module.catalog[each.key].databricks_catalog.this
+  id = each.value
 }
 
 import {
-  to = module.workspace.module.catalog["shared_ref"].databricks_grants.this[0]
-  id = "catalog/shared_ref"
+  for_each = {
+    shared_ref = "catalog/shared_ref"
+  }
+  to = module.workspace.module.catalog[each.key].databricks_grants.this[0]
+  id = each.value
 }
 
 import {
-  to = module.workspace.module.schema["shared_ref.ref"].databricks_schema.this
-  id = "shared_ref.ref"
+  for_each = {
+    "shared_ref.ref" = "shared_ref.ref"
+  }
+  to = module.workspace.module.schema[each.key].databricks_schema.this
+  id = each.value
 }
 
 import {
-  to = module.workspace.module.storage_credential["shared_cred"].databricks_storage_credential.this
-  id = "shared_cred"
+  for_each = {
+    shared_cred = "shared_cred"
+  }
+  to = module.workspace.module.storage_credential[each.key].databricks_storage_credential.this
+  id = each.value
 }
 
 import {
-  to = module.workspace.module.workspace_binding["1111|storage_credential|shared_cred"].databricks_workspace_binding.this
-  id = "1111|storage_credential|shared_cred"
+  for_each = {
+    "1111|storage_credential|shared_cred" = "1111|storage_credential|shared_cred"
+    "2222|storage_credential|shared_cred" = "2222|storage_credential|shared_cred"
+  }
+  to = module.workspace.module.workspace_binding[each.key].databricks_workspace_binding.this
+  id = each.value
 }
 
 import {
-  to = module.workspace.module.workspace_binding["2222|storage_credential|shared_cred"].databricks_workspace_binding.this
-  id = "2222|storage_credential|shared_cred"
+  for_each = {
+    shared_cred = "storage_credential/shared_cred"
+  }
+  to = module.workspace.module.storage_credential[each.key].databricks_grants.this[0]
+  id = each.value
 }
 
 import {
-  to = module.workspace.module.storage_credential["shared_cred"].databricks_grants.this[0]
-  id = "storage_credential/shared_cred"
-}
-
-import {
-  to = module.workspace.module.external_location["public_ref"].databricks_external_location.this
-  id = "public_ref"
+  for_each = {
+    public_ref = "public_ref"
+  }
+  to = module.workspace.module.external_location[each.key].databricks_external_location.this
+  id = each.value
 }
