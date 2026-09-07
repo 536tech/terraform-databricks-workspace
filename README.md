@@ -38,11 +38,12 @@ always correct when datatf emits it.
 
 ## Usage
 
-From a separate Terraform root beside a clone of this repository:
+Use the versioned module from the Terraform Registry:
 
 ```hcl
 module "workspace" {
-  source = "../terraform-databricks-workspace"
+  source  = "536tech/workspace/databricks"
+  version = "0.1.0"
 
   catalogs = {
     sales = {
@@ -70,9 +71,10 @@ alone. See [`examples/shared`](examples/shared).
 
 ## Import a live workspace
 
-The module has no Terraform Registry release. `datatf export --scaffold` creates a root with a
-Git commit source. The caller needs repository access. The import workflow and mock tests require
-Terraform 1.7 or later; the reusable module alone requires Terraform 1.5 or later.
+`datatf export --scaffold` creates a Terraform root. Select this Registry release with
+`--module-source 536tech/workspace/databricks --module-version 0.1.0`.
+The import workflow and mock tests require Terraform 1.7 or later.
+The reusable module alone requires Terraform 1.5 or later.
 
 1. Run `datatf export --scaffold --out ./workspace` against the selected workspace.
 2. Confirm that `export-report.json` is complete and covers the intended resource groups.
