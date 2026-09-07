@@ -1,7 +1,7 @@
 # Adopt an existing workspace
 
 `datatf export --scaffold` creates a Terraform root. Select this Registry release with
-`--module-source 536tech/workspace/databricks --module-version 0.1.1`.
+`--module-source 536tech/workspace/databricks --module-version 0.2.0`.
 The import workflow and mock tests require Terraform 1.7 or later.
 The reusable module alone requires Terraform 1.5 or later.
 
@@ -22,7 +22,7 @@ bootstrap root. Never import one remote object into more than one state.
 
 ## Import addresses
 
-The root module is a composition module. It reads 17 input maps and creates one child module
+The root module is a pattern module. It reads 17 input maps and creates one child module
 instance per object. The child module instance names and `for_each` keys are a contract:
 [datatf](https://github.com/536tech/datatf) exports a live workspace into `terraform.tfvars` and a
 matching `imports.tf`. Each import address points at a resource in the table below.
@@ -81,3 +81,22 @@ Service principal keys are readable aliases. The root module resolves managed al
 service principal outputs. It resolves external aliases from `external_service_principals`.
 The root passes resolved grant lists and permission lists to the child modules. Names that are
 not aliases pass through unchanged for users and groups.
+
+## Upgrade from 0.1.1
+
+Version 0.2.0 replaces the bundled resource modules with exact Registry dependencies.
+The pattern keeps its inputs, outputs, child module names, keys, and resource addresses.
+Existing DataTF exports remain compatible. Change the pattern version to `0.2.0`, run
+`terraform init`, and require a plan with no resource changes. No state move is needed when
+module block names and inputs remain the same.
+
+Version 0.2.0 no longer contains `//modules/<name>` source paths. Existing callers can keep
+version 0.1.1 or select the corresponding dedicated resource module from the README table.
+For example, change `536tech/workspace/databricks//modules/catalog` to
+`536tech/catalog/databricks` with version `0.1.0`. Keep the same module block name and inputs.
+The resource addresses inside the dedicated module match the old submodule.
+
+Resource module releases are independent. The pattern pins exact dependency versions because
+Terraform's dependency lock file locks providers only. Test the DataTF contract and integration
+checks before updating any dependency pin. A new resource release does not upgrade an existing
+pattern release.
