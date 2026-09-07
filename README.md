@@ -25,8 +25,12 @@ modules without a major version bump.
 | `module.secret_scope["<name>"]` | `databricks_secret_scope.this`, `databricks_secret_acl.this["<principal>"]` |
 | `module.service_principal["<key>"]` | `databricks_service_principal.this` |
 
-This table is the module boundary. The module does not create an Azure workspace, metastore,
-account identity, job, pipeline, notebook, model, stored data object, or secret value.
+This table is the module boundary. The module does not provision Azure resources, metastores,
+account role assignments, jobs, pipelines, notebooks, models, stored data objects, or secret values.
+
+The module supports selected platform settings, not every setting available in the provider.
+DataTF reports its selected resource groups and omissions. Require a complete export and an
+imports-only plan before adoption. See [scope and validation](docs/validation.md).
 
 `databricks_grants.this` and `databricks_permissions.this` use `count`. The count is 1 only when
 the matching access or permissions input is not empty, so the `[0]` index in an import address is
@@ -34,10 +38,11 @@ always correct when datatf emits it.
 
 ## Usage
 
+From a separate Terraform root beside a clone of this repository:
+
 ```hcl
 module "workspace" {
-  source  = "536tech/workspace/databricks"
-  version = "~> 0.1"
+  source = "../terraform-databricks-workspace"
 
   catalogs = {
     sales = {
@@ -65,13 +70,24 @@ alone. See [`examples/shared`](examples/shared).
 
 ## Import a live workspace
 
-1. Run `datatf export` against the workspace. It writes `terraform.tfvars` and `imports.tf`.
-2. Copy both into a root that calls this module with the instance name `workspace`.
-3. Run `terraform plan -out=tfplan`.
-4. Run `terraform show tfplan`. The plan must show imports only.
-5. Run `terraform apply tfplan` after approval.
-6. Keep a state backup and the reviewed plan during an ownership migration.
-7. Delete `imports.tf`.
+The module has no Terraform Registry release. `datatf export --scaffold` creates a root with a
+Git commit source. The caller needs repository access. The import workflow and mock tests require
+Terraform 1.7 or later; the reusable module alone requires Terraform 1.5 or later.
+
+1. Run `datatf export --scaffold --out ./workspace` against the selected workspace.
+2. Confirm that `export-report.json` is complete and covers the intended resource groups.
+3. Configure a remote backend with a separate state key for this workspace.
+4. Run `terraform init` in the generated root.
+5. Run `terraform plan -out=tfplan`.
+6. Run `terraform show tfplan`. Require imports with no creates, updates, replacements, or deletes.
+7. Run `terraform apply tfplan` after approval.
+8. Keep a state backup and the reviewed plan during an ownership migration.
+9. Delete `imports.tf`.
+10. Run `terraform plan -detailed-exitcode`. Require exit code 0.
+
+Use one workspace state per workspace and one shared state per metastore. Both roots use a
+workspace provider. Keep Azure resources, account identities, and metastore setup in a separate
+bootstrap root. Never import one remote object into more than one state.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -148,18 +164,27 @@ No resources.
 
 ```console
 terraform init -backend=false
-terraform test
+python3 scripts/check-contract.py
 ```
 
-`tests/contract.tftest.hcl` mocks the Databricks provider and plans the datatf golden workspace
-export. It asserts the module instance count for every kind, so a change that breaks an import
-address fails the test.
+The tests use a mock Databricks provider and current synthetic DataTF exports. The address check
+compares every planned resource with DataTF's import addresses for both scopes. Tests also cover
+empty inputs, absent grants, principal aliases, input rejection, and workspace binding modes.
+
+CI uses the committed root provider lock file for every module and example. Dependabot can update
+that file. CI also tests provider 1.128.0, the declared minimum. These checks require no cloud
+credentials or private DataTF token. See [the validation record](docs/validation.md) for integration
+checks and their limits.
 
 ## Notes on types
 
-The provider is workspace level. Configure it with `DATABRICKS_HOST` and a token, or with
-`DATABRICKS_CONFIG_PROFILE`. This repository has no account-level provider and manages no
-account-level objects.
+Configure the Databricks provider in the calling root with the target workspace URL and unified
+authentication. Pass that provider to this module. Do not pass an account endpoint.
+
+Service principals are managed through the workspace API. With identity federation, Databricks
+synchronizes identities to the account. This module does not manage account role assignments or
+Microsoft Entra applications. Avoid separate states that both change the same identity attributes.
+See [Databricks service principal guidance](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/terraform/service-principals).
 
 `workspace_bindings` stays with the Unity Catalog securable that it restricts. A shared root can
 therefore own a multi-workspace binding through one designated workspace provider.

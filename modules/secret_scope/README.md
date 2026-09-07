@@ -15,7 +15,7 @@ The count-gated addresses above are part of the datatf import contract. Do not r
 
 ```hcl
 module "secret_scope" {
-  source = "536tech/workspace/databricks//modules/secret_scope"
+  source = "../terraform-databricks-workspace/modules/secret_scope"
 
   name = "kv-scope"
 
@@ -37,13 +37,13 @@ module "secret_scope" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
+| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
+| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Modules
 

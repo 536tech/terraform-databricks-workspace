@@ -24,6 +24,10 @@ Rename the instance and every import address stops resolving.
 
 ## Run it
 
+Use Terraform 1.7 or later. These fixtures are synthetic. Replace them with a complete DataTF
+export from the target workspace before any real plan or apply. Configure a remote backend with
+a state key that differs from every other root.
+
 ```console
 databricks auth profiles
 export DATABRICKS_CONFIG_PROFILE=<profile>

@@ -26,6 +26,10 @@ The files in this directory use the DataTF fake workspace fixtures:
 
 ## Run it
 
+Use Terraform 1.7 or later. These fixtures are synthetic. Replace them with a complete DataTF
+export from the target workspace before any real plan or apply. Configure a remote backend with
+a state key that differs from every other root.
+
 ```console
 databricks auth profiles
 export DATABRICKS_CONFIG_PROFILE=<profile>
@@ -40,6 +44,8 @@ The plan must show imports only.
 ```console
 terraform apply tfplan
 ```
+
+Delete `imports.tf` after the import. Run `terraform plan -detailed-exitcode` and require exit code 0.
 
 ## Grants and count gating
 

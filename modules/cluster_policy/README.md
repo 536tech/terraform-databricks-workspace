@@ -15,7 +15,7 @@ The count-gated addresses above are part of the datatf import contract. Do not r
 
 ```hcl
 module "cluster_policy" {
-  source = "536tech/workspace/databricks//modules/cluster_policy"
+  source = "../terraform-databricks-workspace/modules/cluster_policy"
 
   name        = "Team Policy"
   description = "Pinned runtime for team clusters"
@@ -46,13 +46,13 @@ module "cluster_policy" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
+| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
+| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Modules
 

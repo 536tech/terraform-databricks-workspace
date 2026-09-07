@@ -15,7 +15,7 @@ The count-gated addresses above are part of the datatf import contract. Do not r
 
 ```hcl
 module "schema" {
-  source = "536tech/workspace/databricks//modules/schema"
+  source = "../terraform-databricks-workspace/modules/schema"
 
   catalog_name = "sales"
   name         = "bronze"
@@ -34,13 +34,13 @@ module "schema" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0 |
+| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0 |
+| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Modules
 
