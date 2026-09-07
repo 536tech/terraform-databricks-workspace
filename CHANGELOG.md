@@ -9,7 +9,20 @@ Module instance names, `for_each` keys, and the count-gated `[0]` indexes are pa
 interface, because datatf import addresses point at them. A change to any of them is a breaking
 change.
 
-## [Unreleased]
+## [0.2.0] - 2026-09-07
+
+### Changed
+
+- Make the workspace module a pattern that pins ten dedicated Registry resource modules to 0.1.0.
+- Preserve the pattern's inputs, outputs, child module names, and DataTF import addresses.
+- Move resource module CI and releases into their dedicated repositories.
+
+### Removed
+
+- Remove the bundled `//modules/<name>` source paths from this release. Direct callers can retain
+  0.1.1 or select the dedicated resource source with the same module block name and inputs.
+
+## [0.1.1]
 
 ### Added
 

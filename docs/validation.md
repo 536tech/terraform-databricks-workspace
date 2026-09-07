@@ -1,8 +1,8 @@
 # Scope and validation
 
 This module composes selected platform settings inside an existing Azure Databricks workspace.
-It has ten child modules and thirteen Terraform resource types. DataTF exports inputs and imports
-for those resources. It does not export every Databricks object or every provider attribute.
+It uses ten independently released child modules and thirteen Terraform resource types.
+DataTF exports inputs and imports for those resources. It does not export every Databricks object or every provider attribute.
 
 ## State ownership
 
@@ -59,7 +59,8 @@ actionlint
 zizmor .github/workflows/ci.yml
 ```
 
-CI copies the committed root provider lock to each child module and example before validation.
+CI copies the committed root provider lock to each example before validation.
+Each resource repository validates its own module and runs its own mock tests.
 Dependabot monitors Terraform, GitHub Actions, and pre-commit updates weekly, in groups, with a
 seven-day cooldown. Terraform lock updates select the tested provider without raising the module's
 minimum version for each release. See [Dependabot options][dependabot].
