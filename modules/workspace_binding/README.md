@@ -10,39 +10,57 @@ See the [Databricks provider documentation](https://registry.terraform.io/provid
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
+The following requirements are needed by this module:
+
+- terraform (>= 1.5.0)
+
+- databricks (>= 1.128.0, < 2.0.0)
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
+The following providers are used by this module:
 
-## Modules
-
-No modules.
+- databricks (>= 1.128.0, < 2.0.0)
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [databricks_workspace_binding.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/workspace_binding) | resource |
+The following resources are used by this module:
 
-## Inputs
+- [databricks_workspace_binding.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/workspace_binding) (resource)
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_binding_type"></a> [binding\_type](#input\_binding\_type) | Read-only or read-write binding type. | `string` | n/a | yes |
-| <a name="input_securable_name"></a> [securable\_name](#input\_securable\_name) | Unity Catalog securable name. | `string` | n/a | yes |
-| <a name="input_securable_type"></a> [securable\_type](#input\_securable\_type) | Unity Catalog securable type. | `string` | n/a | yes |
-| <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Workspace ID to bind. | `number` | n/a | yes |
+## Required Inputs
+
+The following input variables are required:
+
+### binding\_type
+
+Description: Read-only or read-write binding type.
+
+Type: `string`
+
+### securable\_name
+
+Description: Unity Catalog securable name.
+
+Type: `string`
+
+### securable\_type
+
+Description: Unity Catalog securable type.
+
+Type: `string`
+
+### workspace\_id
+
+Description: Workspace ID to bind.
+
+Type: `number`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | Workspace binding ID. |
+The following outputs are exported:
+
+### id
+
+Description: Workspace binding ID.
 <!-- END_TF_DOCS -->

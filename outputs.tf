@@ -4,7 +4,7 @@ output "catalog_ids" {
 }
 
 output "schema_ids" {
-  description = "Managed schemas. Key = \"<catalog>.<schema>\"; value = schema id."
+  description = "Managed schemas. Key = `catalog.schema`; value = schema id."
   value       = { for key, m in module.schema : key => m.id }
 }
 
