@@ -1,250 +1,46 @@
-# Contract test. The values below are the datatf golden workspace export
-# (internal/contract/testdata/golden/workspace). They must stay in step with it:
-# the import blocks datatf writes address exactly the module instances asserted here.
+# DataTF golden fixtures: see tests/fixtures/README.md.
 
 mock_provider "databricks" {}
 
 variables {
-  catalogs = {
-    sales = {
-      comment        = "Sales domain"
-      isolation_mode = "ISOLATED"
-      owner          = "data-platform"
-      properties = {
-        team = "sales"
-      }
-      storage_root = "abfss://sales@lake.dfs.core.windows.net/"
-    }
-  }
-
-  catalog_access = {
-    sales = {
-      data-engineers  = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
-      external-etl-sp = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
-    }
-  }
-
-  external_service_principals = {
-    external-etl-sp = "a1b2c3d4-0000-0000-0000-000000000001"
-  }
-
-  schemas = {
-    sales = ["bronze", "silver"]
-  }
-
-  schema_access = {
-    sales = {
-      bronze = {
-        "ingest@example.com" = ["MODIFY", "SELECT"]
-      }
-      silver = {}
-    }
-  }
-
-  schema_storage_roots = {
-    sales = {
-      bronze = "abfss://sales@lake.dfs.core.windows.net/bronze"
-    }
-  }
-
-  schema_comments = {
-    sales = {
-      bronze = "Raw landing"
-    }
-  }
-
-  storage_credentials = {
-    lake_cred = {
-      azure_managed_identity = {
-        access_connector_id = join("", [
-          "/subscriptions/sub/resourceGroups/rg/providers/",
-          "Microsoft.Databricks/accessConnectors/lake-ac",
-        ])
-        managed_identity_id = join("", [
-          "/subscriptions/sub/resourceGroups/rg/providers/",
-          "Microsoft.ManagedIdentity/userAssignedIdentities/lake-mi",
-        ])
-      }
-      comment        = "Lake access connector"
-      isolation_mode = "ISOLATION_MODE_ISOLATED"
-      owner          = "data-platform"
-      read_only      = false
-    }
-  }
-
-  storage_credential_access = {
-    lake_cred = {
-      data-platform-admins = ["ALL_PRIVILEGES"]
-    }
-  }
-
-  external_locations = {
-    lake_raw = {
-      comment            = "Raw zone"
-      credential_name    = "lake_cred"
-      enable_file_events = true
-      fallback           = false
-      isolation_mode     = "ISOLATION_MODE_ISOLATED"
-      owner              = "data-platform"
-      read_only          = false
-      url                = "abfss://raw@lake.dfs.core.windows.net/"
-    }
-  }
-
-  external_location_access = {
-    lake_raw = {
-      etl-sp = ["READ_FILES", "WRITE_FILES"]
-    }
-  }
-
-  workspace_bindings = {
-    "1111|catalog|sales" = {
-      binding_type   = "BINDING_TYPE_READ_WRITE"
-      securable_name = "sales"
-      securable_type = "catalog"
-      workspace_id   = 1111
-    }
-    "1111|external_location|lake_raw" = {
-      binding_type   = "BINDING_TYPE_READ_WRITE"
-      securable_name = "lake_raw"
-      securable_type = "external_location"
-      workspace_id   = 1111
-    }
-    "1111|storage_credential|lake_cred" = {
-      binding_type   = "BINDING_TYPE_READ_WRITE"
-      securable_name = "lake_cred"
-      securable_type = "storage_credential"
-      workspace_id   = 1111
-    }
-  }
-
-  cluster_policies = {
-    "Job Family Policy" = {
-      libraries = []
-      permissions = [{
-        permission_level       = "CAN_USE"
-        service_principal_name = "external-etl-sp"
-      }]
-      policy_family_definition_overrides = {
-        "custom_tags.team" = {
-          type  = "fixed"
-          value = "data"
-        }
-      }
-      policy_family_id = "job-cluster"
-    }
-    "Team Policy" = {
-      definition = {
-        autotermination_minutes = {
-          defaultValue = 30
-          maxValue     = 60
-          type         = "range"
-        }
-        spark_version = {
-          type  = "fixed"
-          value = "15.4.x-scala2.12"
-        }
-      }
-      description = "Pinned runtime for team clusters"
-      libraries = [{
-        pypi = {
-          package = "great-expectations==0.18.0"
-        }
-      }]
-      max_clusters_per_user = 2
-      permissions = [{
-        group_name       = "data-engineers"
-        permission_level = "CAN_USE"
-      }]
-    }
-  }
-
-  instance_pools = {
-    shared-pool = {
-      azure_attributes = {
-        availability       = "ON_DEMAND_AZURE"
-        spot_bid_max_price = -1
-      }
-      custom_tags = {
-        cost_center = "1234"
-      }
-      enable_elastic_disk                   = true
-      idle_instance_autotermination_minutes = 15
-      max_capacity                          = 10
-      min_idle_instances                    = 1
-      node_type_id                          = "Standard_DS3_v2"
-      permissions = [{
-        permission_level = "CAN_MANAGE"
-        user_name        = "jon@example.com"
-      }]
-      preloaded_spark_versions = ["15.4.x-scala2.12"]
-    }
-  }
-
-  warehouses = {
-    "Analytics WH" = {
-      auto_stop_mins            = 20
-      cluster_size              = "Small"
-      enable_photon             = true
-      enable_serverless_compute = true
-      max_num_clusters          = 3
-      min_num_clusters          = 1
-      permissions = [{
-        group_name       = "analysts"
-        permission_level = "CAN_USE"
-      }]
-      spot_instance_policy = "COST_OPTIMIZED"
-      tags = {
-        team = "analytics"
-      }
-      warehouse_type = "PRO"
-    }
-  }
-
-  secret_scopes = {
-    db-scope = {
-      acls = {
-        "jon@example.com" = "MANAGE"
-      }
-    }
-    kv-scope = {
-      acls = {
-        admins         = "MANAGE"
-        data-engineers = "READ"
-      }
-      keyvault_metadata = {
-        dns_name = "https://kv-data.vault.azure.net/"
-        resource_id = join("", [
-          "/subscriptions/sub/resourceGroups/rg/providers/",
-          "Microsoft.KeyVault/vaults/kv-data",
-        ])
-      }
-    }
-  }
-
-  service_principals = {
-    dup-sp-1 = {
-      allow_cluster_create       = false
-      allow_instance_pool_create = false
-      databricks_sql_access      = false
-      display_name               = "dup-sp"
-      workspace_access           = false
-    }
-    dup-sp-2 = {
-      allow_cluster_create       = true
-      allow_instance_pool_create = false
-      databricks_sql_access      = false
-      display_name               = "dup-sp"
-      workspace_access           = false
-      workspace_consume          = true
-    }
-    etl-sp = {
-      allow_cluster_create       = false
-      allow_instance_pool_create = false
-      databricks_sql_access      = true
-      workspace_access           = true
-    }
-  }
+  catalogs = jsondecode(file("tests/fixtures/workspace.json")).tfvars.catalogs
+  catalog_access = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.catalog_access
+  )
+  schemas       = jsondecode(file("tests/fixtures/workspace.json")).tfvars.schemas
+  schema_access = jsondecode(file("tests/fixtures/workspace.json")).tfvars.schema_access
+  schema_storage_roots = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.schema_storage_roots
+  )
+  schema_comments = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.schema_comments
+  )
+  storage_credentials = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.storage_credentials
+  )
+  storage_credential_access = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.storage_credential_access
+  )
+  external_locations = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.external_locations
+  )
+  external_location_access = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.external_location_access
+  )
+  workspace_bindings = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.workspace_bindings
+  )
+  cluster_policies = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.cluster_policies
+  )
+  instance_pools = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.instance_pools
+  )
+  warehouses    = jsondecode(file("tests/fixtures/workspace.json")).tfvars.warehouses
+  secret_scopes = jsondecode(file("tests/fixtures/workspace.json")).tfvars.secret_scopes
+  service_principals = (
+    jsondecode(file("tests/fixtures/workspace.json")).tfvars.service_principals
+  )
 }
 
 run "golden_workspace_export" {
@@ -317,27 +113,37 @@ run "golden_workspace_export" {
     condition     = length(output.service_principal_ids) == 3
     error_message = "Every service principal must be exposed in service_principal_ids."
   }
-
-  assert {
-    condition = contains([
-      for grant in local.catalog_grants["sales"] : grant.principal
-    ], "a1b2c3d4-0000-0000-0000-000000000001")
-    error_message = "Catalog grants must resolve an external service principal alias."
-  }
-
-  assert {
-    condition = contains([
-      for permission in local.cluster_policy_permissions["Job Family Policy"] :
-      permission.service_principal_name
-    ], "a1b2c3d4-0000-0000-0000-000000000001")
-    error_message = "Policy permissions must resolve an external service principal alias."
-  }
 }
 
-run "unity_catalog_only_export" {
+run "golden_shared_export" {
   command = plan
 
   variables {
+    catalogs       = jsondecode(file("tests/fixtures/shared.json")).tfvars.catalogs
+    catalog_access = jsondecode(file("tests/fixtures/shared.json")).tfvars.catalog_access
+    schemas        = jsondecode(file("tests/fixtures/shared.json")).tfvars.schemas
+    schema_access  = jsondecode(file("tests/fixtures/shared.json")).tfvars.schema_access
+    schema_storage_roots = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.schema_storage_roots
+    )
+    schema_comments = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.schema_comments
+    )
+    storage_credentials = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.storage_credentials
+    )
+    storage_credential_access = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.storage_credential_access
+    )
+    external_locations = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.external_locations
+    )
+    external_location_access = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.external_location_access
+    )
+    workspace_bindings = (
+      jsondecode(file("tests/fixtures/shared.json")).tfvars.workspace_bindings
+    )
     cluster_policies   = {}
     instance_pools     = {}
     warehouses         = {}
@@ -461,4 +267,47 @@ run "invalid_workspace_binding" {
   }
 
   expect_failures = [var.workspace_bindings]
+}
+
+run "principal_aliases" {
+  command = apply
+
+  variables {
+    external_service_principals = {
+      external-etl = "a1b2c3d4-0000-0000-0000-000000000099"
+    }
+    catalog_access = {
+      sales = {
+        external-etl = ["USE_CATALOG"]
+        etl-sp       = ["USE_CATALOG"]
+      }
+    }
+    cluster_policies = {
+      Alias = {
+        definition = {}
+        permissions = [
+          { permission_level = "CAN_USE", service_principal_name = "external-etl" },
+          { permission_level = "CAN_USE", service_principal_name = "etl-sp" },
+        ]
+      }
+    }
+  }
+
+  assert {
+    condition = toset([for grant in local.catalog_grants.sales : grant.principal]) == toset([
+      "a1b2c3d4-0000-0000-0000-000000000099",
+      output.service_principal_application_ids["etl-sp"],
+    ])
+    error_message = "Catalog grants must resolve managed and external application IDs."
+  }
+
+  assert {
+    condition = toset([
+      for permission in local.cluster_policy_permissions.Alias : permission.service_principal_name
+      ]) == toset([
+      "a1b2c3d4-0000-0000-0000-000000000099",
+      output.service_principal_application_ids["etl-sp"],
+    ])
+    error_message = "Policy permissions must resolve managed and external application IDs."
+  }
 }

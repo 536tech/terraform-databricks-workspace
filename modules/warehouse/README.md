@@ -15,7 +15,7 @@ The count-gated addresses above are part of the datatf import contract. Do not r
 
 ```hcl
 module "warehouse" {
-  source = "536tech/workspace/databricks//modules/warehouse"
+  source = "../terraform-databricks-workspace/modules/warehouse"
 
   name                      = "Analytics WH"
   cluster_size              = "Small"
@@ -41,14 +41,14 @@ module "warehouse" {
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
 
 ## Modules
@@ -58,14 +58,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [databricks_permissions.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/permissions) | resource |
 | [databricks_sql_endpoint.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/sql_endpoint) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_auto_stop_mins"></a> [auto\_stop\_mins](#input\_auto\_stop\_mins) | Minutes of inactivity before the warehouse stops. 0 disables auto stop. | `number` | n/a | yes |
 | <a name="input_cluster_size"></a> [cluster\_size](#input\_cluster\_size) | Warehouse size, for example 2X-Small, Small, or Medium. | `string` | n/a | yes |
 | <a name="input_enable_photon"></a> [enable\_photon](#input\_enable\_photon) | Run queries on the Photon engine. | `bool` | n/a | yes |
@@ -81,7 +81,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | SQL warehouse id. |
 | <a name="output_jdbc_url"></a> [jdbc\_url](#output\_jdbc\_url) | JDBC URL of the warehouse. |
 | <a name="output_name"></a> [name](#output\_name) | SQL warehouse name. |

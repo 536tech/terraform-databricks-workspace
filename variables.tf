@@ -210,9 +210,9 @@ variable "cluster_policies" {
   validation {
     condition = alltrue([
       for name, policy in var.cluster_policies :
-      try(policy.definition, null) == null || try(policy.policy_family_id, null) == null
+      (try(policy.definition, null) != null) != (try(policy.policy_family_id, null) != null)
     ])
-    error_message = "Set definition or policy_family_id on a cluster policy, not both."
+    error_message = "Set exactly one of definition or policy_family_id on each cluster policy."
   }
 }
 
@@ -300,6 +300,18 @@ variable "service_principals" {
   }))
 
   default = {}
+
+  validation {
+    condition = alltrue([
+      for principal in var.service_principals :
+      principal.workspace_consume != true || (
+        !principal.workspace_access && !principal.databricks_sql_access
+      )
+    ])
+    error_message = <<-EOT
+      workspace_consume cannot be true with workspace_access or databricks_sql_access.
+    EOT
+  }
 }
 
 variable "external_service_principals" {
