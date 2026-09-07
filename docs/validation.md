@@ -2,7 +2,8 @@
 
 This module composes selected platform settings inside an existing Azure Databricks workspace.
 It uses ten independently released child modules and thirteen Terraform resource types.
-DataTF exports inputs and imports for those resources. It does not export every Databricks object or every provider attribute.
+DataTF exports inputs and imports for those resources.
+It does not export every Databricks object or every provider attribute.
 
 ## State ownership
 
@@ -81,6 +82,40 @@ This uses the real provider against DataTF's fake API. Require imports only in b
 Use the separate infra-private Azure lifecycle for cloud authentication, actual API behavior,
 import apply, post-import drift checks, repeat exports, and cleanup verification.
 
+## Resource module extraction: 2026-09-07
+
+Workspace pattern `0.2.0` pins all ten Registry resource modules at `0.1.0`.
+The published Terraform files match the bundled resource implementations in workspace `0.1.1`.
+The pattern preserves its inputs, outputs, child module names, keys, and resource addresses.
+
+All ten resource repositories pass CI with the locked provider, 1.130.0, and the minimum, 1.128.0.
+The pattern passes all 15 contract tests and validates both examples with Registry dependencies.
+DataTF CI tests the complete public Registry chain with the real provider against its fake API.
+It imports 27 workspace resources and 8 shared resources, then obtains clean second plans.
+A separate Terraform 1.15.6 check upgrades existing `0.1.1` states to Registry version `0.2.0`.
+Both scopes retain the same tfvars and resource addresses. Both upgrade plans return exit code 0.
+
+[Azure run 34169326942][extraction-run] uses infra-private commit
+`b028f685440e8c3f6532ebd19663aa2b5e65c1cd`, Terraform 1.16.1, and Databricks provider 1.131.0
+for the exported roots. The bootstrap uses provider 1.129.0.
+The run checks module commit `1ede900cd4fc13a3f11dc546af3f862460e2cd66`, whose contents match
+workspace release `0.2.0` at `90423817d0de5cc1092f6ab800d4bcbb36b7ca4d`.
+It checks DataTF commit `0861626cb92d91be5cada0735245439271c23062`.
+The DataTF application sources match merged commit `204dc51decb6f035d2c7b1bae6a434e01a46dc7e`.
+The later packaging change does not alter the export code.
+
+| Scope | Imports | Export report | Plan after import |
+| --- | ---: | --- | --- |
+| Workspace | 49 | Complete | No changes |
+| Shared | 5 | Complete | No changes |
+
+The import plans cover all thirteen supported resource types. They contain zero creates, updates,
+replacements, or deletes. The workflow applies the saved import plans and removes the import blocks.
+Both subsequent plans return exit code 0. Repeat exports match.
+Cleanup removes all 79 bootstrap fixtures. The Azure cleanup check passes, and the E2E state is empty.
+The run uses a local pattern checkout that downloads the released Registry resource modules.
+The separate DataTF CI and upgrade checks also download the pattern itself from the Registry.
+
 ## Audit evidence: 2026-09-06
 
 The checked DataTF commit is `2958f18f24c46a42ec3478e370dc0c7c046dc5f1`.
@@ -127,3 +162,4 @@ its own complete export, reviewed import-only plan, and state backup.
 [permissions]: https://github.com/databricks/terraform-provider-databricks/blob/v1.130.0/docs/resources/permissions.md
 [dependabot]: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
 [cloud-run]: https://github.com/536tech/infra-private/actions/runs/34063680888
+[extraction-run]: https://github.com/536tech/infra-private/actions/runs/34169326942
