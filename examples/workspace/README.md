@@ -1,12 +1,12 @@
 # Workspace scope example
 
-This root imports and then manages one workspace: its Unity Catalog securables plus the
-workspace-native objects around it.
+This root imports and then manages the supported platform configuration for one workspace.
+It includes supported Unity Catalog objects and workspace configuration.
 
-The files in this directory are the datatf golden workspace export, copied verbatim:
+The files in this directory use the DataTF fake workspace fixtures:
 
-- `*.auto.tfvars` — one file per input block. Terraform loads them automatically.
-- `imports.tf` — one `import` block per exported object.
+- `terraform.tfvars` contains all exported variable values.
+- `imports.tf` contains the matching import blocks.
 
 ## The module instance name
 
@@ -25,19 +25,19 @@ Rename the instance and every import address stops resolving.
 ## Run it
 
 ```console
-export DATABRICKS_HOST=https://adb-0000.0.azuredatabricks.net
-export DATABRICKS_TOKEN=...
+databricks auth profiles
+export DATABRICKS_CONFIG_PROFILE=<profile>
 
 terraform init
-terraform plan
+terraform plan -out=tfplan
+terraform show tfplan
 ```
 
 The plan must show imports only. If it shows a create or an update, the tfvars do not match the
 live workspace; fix the tfvars before you apply.
 
 ```console
-terraform apply
-rm imports.tf
+terraform apply tfplan
 ```
 
 Delete `imports.tf` after the apply. Terraform ignores an import block whose resource is already

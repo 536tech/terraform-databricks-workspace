@@ -18,7 +18,7 @@ variable "catalogs" {
 variable "catalog_access" {
   description = <<-EOT
     Direct grants ON a catalog. Shape: catalog name -> principal -> [privileges].
-    Principals: groups/users by name or email; service principals by application id.
+    Principals: groups/users by name or email; service principals by readable alias.
   EOT
 
   type    = map(map(list(string)))
@@ -105,20 +105,37 @@ variable "external_location_access" {
   default     = {}
 }
 
+variable "workspace_bindings" {
+  type    = any
+  default = {}
+}
+
+variable "external_service_principals" {
+  description = <<-EOT
+    Service principals managed by another Terraform root.
+    Key = readable alias; value = Databricks application ID.
+  EOT
+
+  type    = map(string)
+  default = {}
+}
+
 # The shared root is the same composition module with Unity Catalog inputs only.
 # The instance name must stay "workspace"; datatf writes module.workspace.* import
 # addresses for both scopes.
 module "workspace" {
   source = "../../"
 
-  catalogs                  = var.catalogs
-  catalog_access            = var.catalog_access
-  schemas                   = var.schemas
-  schema_access             = var.schema_access
-  schema_storage_roots      = var.schema_storage_roots
-  schema_comments           = var.schema_comments
-  storage_credentials       = var.storage_credentials
-  storage_credential_access = var.storage_credential_access
-  external_locations        = var.external_locations
-  external_location_access  = var.external_location_access
+  catalogs                    = var.catalogs
+  catalog_access              = var.catalog_access
+  schemas                     = var.schemas
+  schema_access               = var.schema_access
+  schema_storage_roots        = var.schema_storage_roots
+  schema_comments             = var.schema_comments
+  storage_credentials         = var.storage_credentials
+  storage_credential_access   = var.storage_credential_access
+  external_locations          = var.external_locations
+  external_location_access    = var.external_location_access
+  workspace_bindings          = var.workspace_bindings
+  external_service_principals = var.external_service_principals
 }

@@ -19,9 +19,13 @@ variables {
 
   catalog_access = {
     sales = {
-      "a1b2c3d4-0000-0000-0000-000000000001" = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
-      "data-engineers"                       = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
+      data-engineers  = ["CREATE_SCHEMA", "USE_CATALOG", "USE_SCHEMA"]
+      external-etl-sp = ["SELECT", "USE_CATALOG", "USE_SCHEMA"]
     }
+  }
+
+  external_service_principals = {
+    external-etl-sp = "a1b2c3d4-0000-0000-0000-000000000001"
   }
 
   schemas = {
@@ -52,8 +56,14 @@ variables {
   storage_credentials = {
     lake_cred = {
       azure_managed_identity = {
-        access_connector_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Databricks/accessConnectors/lake-ac"
-        managed_identity_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/lake-mi"
+        access_connector_id = join("", [
+          "/subscriptions/sub/resourceGroups/rg/providers/",
+          "Microsoft.Databricks/accessConnectors/lake-ac",
+        ])
+        managed_identity_id = join("", [
+          "/subscriptions/sub/resourceGroups/rg/providers/",
+          "Microsoft.ManagedIdentity/userAssignedIdentities/lake-mi",
+        ])
       }
       comment        = "Lake access connector"
       isolation_mode = "ISOLATION_MODE_ISOLATED"
@@ -83,7 +93,28 @@ variables {
 
   external_location_access = {
     lake_raw = {
-      data-engineers = ["READ_FILES", "WRITE_FILES"]
+      etl-sp = ["READ_FILES", "WRITE_FILES"]
+    }
+  }
+
+  workspace_bindings = {
+    "1111|catalog|sales" = {
+      binding_type   = "BINDING_TYPE_READ_WRITE"
+      securable_name = "sales"
+      securable_type = "catalog"
+      workspace_id   = 1111
+    }
+    "1111|external_location|lake_raw" = {
+      binding_type   = "BINDING_TYPE_READ_WRITE"
+      securable_name = "lake_raw"
+      securable_type = "external_location"
+      workspace_id   = 1111
+    }
+    "1111|storage_credential|lake_cred" = {
+      binding_type   = "BINDING_TYPE_READ_WRITE"
+      securable_name = "lake_cred"
+      securable_type = "storage_credential"
+      workspace_id   = 1111
     }
   }
 
@@ -92,7 +123,7 @@ variables {
       libraries = []
       permissions = [{
         permission_level       = "CAN_USE"
-        service_principal_name = "a1b2c3d4-0000-0000-0000-000000000001"
+        service_principal_name = "external-etl-sp"
       }]
       policy_family_definition_overrides = {
         "custom_tags.team" = {
@@ -182,21 +213,24 @@ variables {
         data-engineers = "READ"
       }
       keyvault_metadata = {
-        dns_name    = "https://kv-data.vault.azure.net/"
-        resource_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.KeyVault/vaults/kv-data"
+        dns_name = "https://kv-data.vault.azure.net/"
+        resource_id = join("", [
+          "/subscriptions/sub/resourceGroups/rg/providers/",
+          "Microsoft.KeyVault/vaults/kv-data",
+        ])
       }
     }
   }
 
   service_principals = {
-    "dup-sp (a1b2c3d4-0000-0000-0000-000000000002)" = {
+    dup-sp-1 = {
       allow_cluster_create       = false
       allow_instance_pool_create = false
       databricks_sql_access      = false
       display_name               = "dup-sp"
       workspace_access           = false
     }
-    "dup-sp (a1b2c3d4-0000-0000-0000-000000000003)" = {
+    dup-sp-2 = {
       allow_cluster_create       = true
       allow_instance_pool_create = false
       databricks_sql_access      = false
@@ -242,12 +276,20 @@ run "golden_workspace_export" {
   }
 
   assert {
+    condition     = length(module.workspace_binding) == 3
+    error_message = "Expected 3 workspace binding module instances."
+  }
+
+  assert {
     condition     = length(module.cluster_policy) == 2
     error_message = "Expected 2 cluster policy module instances."
   }
 
   assert {
-    condition     = sort(keys(module.cluster_policy)) == tolist(["Job Family Policy", "Team Policy"])
+    condition = sort(keys(module.cluster_policy)) == tolist([
+      "Job Family Policy",
+      "Team Policy",
+    ])
     error_message = "Cluster policy module keys must be the policy names."
   }
 
@@ -275,6 +317,21 @@ run "golden_workspace_export" {
     condition     = length(output.service_principal_ids) == 3
     error_message = "Every service principal must be exposed in service_principal_ids."
   }
+
+  assert {
+    condition = contains([
+      for grant in local.catalog_grants["sales"] : grant.principal
+    ], "a1b2c3d4-0000-0000-0000-000000000001")
+    error_message = "Catalog grants must resolve an external service principal alias."
+  }
+
+  assert {
+    condition = contains([
+      for permission in local.cluster_policy_permissions["Job Family Policy"] :
+      permission.service_principal_name
+    ], "a1b2c3d4-0000-0000-0000-000000000001")
+    error_message = "Policy permissions must resolve an external service principal alias."
+  }
 }
 
 run "unity_catalog_only_export" {
@@ -299,7 +356,12 @@ run "unity_catalog_only_export" {
   }
 
   assert {
-    condition     = length(module.instance_pool) == 0 && length(module.warehouse) == 0 && length(module.secret_scope) == 0 && length(module.service_principal) == 0
+    condition = (
+      length(module.instance_pool) == 0 &&
+      length(module.warehouse) == 0 &&
+      length(module.secret_scope) == 0 &&
+      length(module.service_principal) == 0
+    )
     error_message = "A Unity Catalog only export must create no workspace-native modules."
   }
 }
@@ -308,21 +370,23 @@ run "no_inputs" {
   command = plan
 
   variables {
-    catalogs                  = {}
-    catalog_access            = {}
-    schemas                   = {}
-    schema_access             = {}
-    schema_storage_roots      = {}
-    schema_comments           = {}
-    storage_credentials       = {}
-    storage_credential_access = {}
-    external_locations        = {}
-    external_location_access  = {}
-    cluster_policies          = {}
-    instance_pools            = {}
-    warehouses                = {}
-    secret_scopes             = {}
-    service_principals        = {}
+    catalogs                    = {}
+    catalog_access              = {}
+    schemas                     = {}
+    schema_access               = {}
+    schema_storage_roots        = {}
+    schema_comments             = {}
+    storage_credentials         = {}
+    storage_credential_access   = {}
+    external_locations          = {}
+    external_location_access    = {}
+    external_service_principals = {}
+    cluster_policies            = {}
+    instance_pools              = {}
+    warehouses                  = {}
+    secret_scopes               = {}
+    service_principals          = {}
+    workspace_bindings          = {}
   }
 
   assert {
@@ -368,6 +432,7 @@ run "securable_without_grants" {
     warehouses                = {}
     secret_scopes             = {}
     service_principals        = {}
+    workspace_bindings        = {}
   }
 
   assert {
@@ -379,4 +444,21 @@ run "securable_without_grants" {
     condition     = length(module.schema) == 1
     error_message = "A schema with no entry in schema_access must still be managed."
   }
+}
+
+run "invalid_workspace_binding" {
+  command = plan
+
+  variables {
+    workspace_bindings = {
+      invalid = {
+        binding_type   = "BINDING_TYPE_READ_ONLY"
+        securable_name = "lake_cred"
+        securable_type = "storage_credential"
+        workspace_id   = 1111
+      }
+    }
+  }
+
+  expect_failures = [var.workspace_bindings]
 }

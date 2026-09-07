@@ -18,6 +18,11 @@ output "external_location_ids" {
   value       = { for name, m in module.external_location : name => m.id }
 }
 
+output "workspace_binding_ids" {
+  description = "Managed workspace bindings. Key = provider import ID; value = resource ID."
+  value       = { for key, m in module.workspace_binding : key => m.id }
+}
+
 output "cluster_policy_ids" {
   description = "Managed cluster policies. Key = policy name; value = policy id."
   value       = { for name, m in module.cluster_policy : name => m.id }

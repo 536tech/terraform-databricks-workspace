@@ -1,19 +1,3 @@
-locals {
-  # Flatten catalog -> [schema] into one map keyed "<catalog>.<schema>", which is
-  # the address datatf emits in its import blocks.
-  schemas = merge([
-    for catalog, names in var.schemas : {
-      for name in names : "${catalog}.${name}" => {
-        catalog_name = catalog
-        name         = name
-        storage_root = try(var.schema_storage_roots[catalog][name], null)
-        comment      = try(var.schema_comments[catalog][name], null)
-        grants       = try(var.schema_access[catalog][name], {})
-      }
-    }
-  ]...)
-}
-
 module "catalog" {
   source   = "./modules/catalog"
   for_each = var.catalogs
@@ -24,7 +8,7 @@ module "catalog" {
   comment        = each.value.comment
   storage_root   = each.value.storage_root
   properties     = each.value.properties
-  grants         = lookup(var.catalog_access, each.key, {})
+  grants         = lookup(local.catalog_grants, each.key, [])
   force_destroy  = var.force_destroy
 }
 
@@ -52,7 +36,7 @@ module "storage_credential" {
   read_only              = each.value.read_only
   comment                = each.value.comment
   azure_managed_identity = each.value.azure_managed_identity
-  grants                 = lookup(var.storage_credential_access, each.key, {})
+  grants                 = lookup(local.storage_credential_grants, each.key, [])
   force_destroy          = var.force_destroy
 }
 
@@ -69,10 +53,22 @@ module "external_location" {
   fallback           = each.value.fallback
   enable_file_events = each.value.enable_file_events
   comment            = each.value.comment
-  grants             = lookup(var.external_location_access, each.key, {})
+  grants             = lookup(local.external_location_grants, each.key, [])
   force_destroy      = var.force_destroy
 
   depends_on = [module.storage_credential]
+}
+
+module "workspace_binding" {
+  source   = "./modules/workspace_binding"
+  for_each = var.workspace_bindings
+
+  workspace_id   = each.value.workspace_id
+  securable_name = each.value.securable_name
+  securable_type = each.value.securable_type
+  binding_type   = each.value.binding_type
+
+  depends_on = [module.catalog, module.storage_credential, module.external_location]
 }
 
 module "cluster_policy" {
@@ -86,7 +82,7 @@ module "cluster_policy" {
   policy_family_definition_overrides = try(each.value.policy_family_definition_overrides, null)
   max_clusters_per_user              = try(each.value.max_clusters_per_user, null)
   libraries                          = try(each.value.libraries, [])
-  permissions                        = each.value.permissions
+  permissions                        = local.cluster_policy_permissions[each.key]
 }
 
 module "instance_pool" {
@@ -102,7 +98,7 @@ module "instance_pool" {
   max_capacity                          = each.value.max_capacity
   custom_tags                           = each.value.custom_tags
   azure_attributes                      = each.value.azure_attributes
-  permissions                           = each.value.permissions
+  permissions                           = local.instance_pool_permissions[each.key]
 }
 
 module "warehouse" {
@@ -119,7 +115,7 @@ module "warehouse" {
   enable_serverless_compute = each.value.enable_serverless_compute
   spot_instance_policy      = each.value.spot_instance_policy
   tags                      = each.value.tags
-  permissions               = each.value.permissions
+  permissions               = local.warehouse_permissions[each.key]
 }
 
 module "secret_scope" {

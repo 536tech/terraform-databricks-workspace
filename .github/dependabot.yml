@@ -1,24 +1,47 @@
 version: 2
-updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    cooldown:
-      default-days: 7
-    groups:
-      github-actions-all:
-        patterns: ["*"]
 
-  - package-ecosystem: "terraform"
-    directories:
-      - "/"
-      - "/examples/*"
-      - "/modules/*"
+updates:
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/New_York
     cooldown:
       default-days: 7
     groups:
-      terraform-all:
-        patterns: ["*"]
+      github-actions:
+        patterns:
+          - "*"
+
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/New_York
+    cooldown:
+      default-days: 7
+    groups:
+      hooks:
+        patterns:
+          - "*"
+
+  - package-ecosystem: terraform
+    directories:
+      - /
+      - /examples/*
+      - /modules/*
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/New_York
+    cooldown:
+      default-days: 7
+    groups:
+      terraform:
+        patterns:
+          - "*"

@@ -32,9 +32,12 @@ variable "properties" {
 }
 
 variable "grants" {
-  description = "Direct grants on the catalog. Shape: principal -> [privileges]."
-  type        = map(list(string))
-  default     = {}
+  description = "Direct catalog grants. A list permits computed service principal application IDs."
+  type = list(object({
+    principal  = string
+    privileges = list(string)
+  }))
+  default = []
 }
 
 variable "force_destroy" {

@@ -45,9 +45,12 @@ variable "comment" {
 }
 
 variable "grants" {
-  description = "Direct grants on the external location. Shape: principal -> [privileges]."
-  type        = map(list(string))
-  default     = {}
+  description = "Direct location grants. A list permits computed service principal application IDs."
+  type = list(object({
+    principal  = string
+    privileges = list(string)
+  }))
+  default = []
 }
 
 variable "force_destroy" {
