@@ -43,45 +43,114 @@ module "cluster_policy" {
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
+The following requirements are needed by this module:
+
+- terraform (>= 1.5.0)
+
+- databricks (>= 1.128.0, < 2.0.0)
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
+The following providers are used by this module:
 
-## Modules
-
-No modules.
+- databricks (>= 1.128.0, < 2.0.0)
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [databricks_cluster_policy.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/cluster_policy) | resource |
-| [databricks_permissions.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/permissions) | resource |
+The following resources are used by this module:
 
-## Inputs
+- [databricks_cluster_policy.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/cluster_policy) (resource)
+- [databricks_permissions.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/permissions) (resource)
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_definition"></a> [definition](#input\_definition) | Policy definition as an object. The module encodes it to JSON. | `any` | `null` | no |
-| <a name="input_description"></a> [description](#input\_description) | Cluster policy description. | `string` | `null` | no |
-| <a name="input_libraries"></a> [libraries](#input\_libraries) | Libraries installed on every cluster that uses the policy. Each element sets one of<br/>pypi, maven, cran, whl, jar, egg, or requirements. | `any` | `[]` | no |
-| <a name="input_max_clusters_per_user"></a> [max\_clusters\_per\_user](#input\_max\_clusters\_per\_user) | Maximum number of clusters one user can start with this policy. | `number` | `null` | no |
-| <a name="input_name"></a> [name](#input\_name) | Cluster policy name. | `string` | n/a | yes |
-| <a name="input_permissions"></a> [permissions](#input\_permissions) | Direct permissions on the policy. Each element names exactly one principal. | <pre>list(object({<br/>    permission_level       = string<br/>    group_name             = optional(string)<br/>    user_name              = optional(string)<br/>    service_principal_name = optional(string)<br/>  }))</pre> | `[]` | no |
-| <a name="input_policy_family_definition_overrides"></a> [policy\_family\_definition\_overrides](#input\_policy\_family\_definition\_overrides) | Overrides on the policy family, as an object. The module encodes it to JSON. | `any` | `null` | no |
-| <a name="input_policy_family_id"></a> [policy\_family\_id](#input\_policy\_family\_id) | Policy family to derive the policy from, for example job-cluster. | `string` | `null` | no |
+## Required Inputs
+
+The following input variables are required:
+
+### name
+
+Description: Cluster policy name.
+
+Type: `string`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### definition
+
+Description: Policy definition as an object. The module encodes it to JSON.
+
+Type: `any`
+
+Default: `null`
+
+### description
+
+Description: Cluster policy description.
+
+Type: `string`
+
+Default: `null`
+
+### libraries
+
+Description: Libraries installed on every cluster that uses the policy. Each element sets one of  
+pypi, maven, cran, whl, jar, egg, or requirements.
+
+Type: `any`
+
+Default: `[]`
+
+### max\_clusters\_per\_user
+
+Description: Maximum number of clusters one user can start with this policy.
+
+Type: `number`
+
+Default: `null`
+
+### permissions
+
+Description: Direct permissions on the policy. Each element names exactly one principal.
+
+Type:
+
+```hcl
+list(object({
+    permission_level       = string
+    group_name             = optional(string)
+    user_name              = optional(string)
+    service_principal_name = optional(string)
+  }))
+```
+
+Default: `[]`
+
+### policy\_family\_definition\_overrides
+
+Description: Overrides on the policy family, as an object. The module encodes it to JSON.
+
+Type: `any`
+
+Default: `null`
+
+### policy\_family\_id
+
+Description: Policy family to derive the policy from, for example job-cluster.
+
+Type: `string`
+
+Default: `null`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | Cluster policy id. |
-| <a name="output_name"></a> [name](#output\_name) | Cluster policy name. |
+The following outputs are exported:
+
+### id
+
+Description: Cluster policy id.
+
+### name
+
+Description: Cluster policy name.
 <!-- END_TF_DOCS -->

@@ -34,40 +34,71 @@ module "secret_scope" {
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_databricks"></a> [databricks](#requirement\_databricks) | >= 1.128.0, < 2.0.0 |
+The following requirements are needed by this module:
+
+- terraform (>= 1.5.0)
+
+- databricks (>= 1.128.0, < 2.0.0)
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_databricks"></a> [databricks](#provider\_databricks) | >= 1.128.0, < 2.0.0 |
+The following providers are used by this module:
 
-## Modules
-
-No modules.
+- databricks (>= 1.128.0, < 2.0.0)
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [databricks_secret_acl.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/secret_acl) | resource |
-| [databricks_secret_scope.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/secret_scope) | resource |
+The following resources are used by this module:
 
-## Inputs
+- [databricks_secret_acl.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/secret_acl) (resource)
+- [databricks_secret_scope.this](https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/secret_scope) (resource)
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_acls"></a> [acls](#input\_acls) | Secret ACLs. Shape: principal -> permission (READ, WRITE, or MANAGE). | `map(string)` | `null` | no |
-| <a name="input_keyvault_metadata"></a> [keyvault\_metadata](#input\_keyvault\_metadata) | Azure Key Vault that backs the scope. | <pre>object({<br/>    resource_id = string<br/>    dns_name    = string<br/>  })</pre> | `null` | no |
-| <a name="input_name"></a> [name](#input\_name) | Secret scope name. | `string` | n/a | yes |
+## Required Inputs
+
+The following input variables are required:
+
+### name
+
+Description: Secret scope name.
+
+Type: `string`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### acls
+
+Description: Secret ACLs. Shape: principal -> permission (READ, WRITE, or MANAGE).
+
+Type: `map(string)`
+
+Default: `null`
+
+### keyvault\_metadata
+
+Description: Azure Key Vault that backs the scope.
+
+Type:
+
+```hcl
+object({
+    resource_id = string
+    dns_name    = string
+  })
+```
+
+Default: `null`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | Secret scope id. |
-| <a name="output_name"></a> [name](#output\_name) | Secret scope name. |
+The following outputs are exported:
+
+### id
+
+Description: Secret scope id.
+
+### name
+
+Description: Secret scope name.
 <!-- END_TF_DOCS -->

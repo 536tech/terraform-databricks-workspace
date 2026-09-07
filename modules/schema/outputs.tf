@@ -1,5 +1,5 @@
 output "id" {
-  description = "Schema id, in the form \"<catalog>.<schema>\"."
+  description = "Schema id, in the form `catalog.schema`."
   value       = databricks_schema.this.id
 }
 

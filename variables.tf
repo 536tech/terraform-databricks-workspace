@@ -116,7 +116,7 @@ variable "external_location_access" {
 variable "workspace_bindings" {
   description = <<-EOT
     Unity Catalog workspace bindings. The map key is the provider import ID:
-    <workspace_id>|<securable_type>|<securable_name>.
+    `workspace_id|securable_type|securable_name`.
   EOT
 
   type = map(object({
@@ -185,16 +185,15 @@ variable "cluster_policies" {
     The validation blocks below enforce the parts of the shape that are fixed.
 
     Per policy:
-      description                        optional string
-      definition                         optional object, encoded to JSON by the module
-      policy_family_id                   optional string
-      policy_family_definition_overrides optional object, encoded to JSON by the module
-      max_clusters_per_user              optional number
-      libraries                          list of objects, each one of pypi, maven, cran,
-                                         whl, jar, egg, or requirements
-      permissions                        list of objects with permission_level and exactly
-                                         one of group_name, user_name,
-                                         service_principal_name
+
+    - `description`: optional string.
+    - `definition`: optional object, encoded to JSON by the module.
+    - `policy_family_id`: optional string.
+    - `policy_family_definition_overrides`: optional object, encoded to JSON by the module.
+    - `max_clusters_per_user`: optional number.
+    - `libraries`: list of objects, each with one of pypi, maven, cran, whl, jar, egg, or requirements.
+    - `permissions`: list of objects with `permission_level` and exactly one principal field.
+      The principal field is `group_name`, `user_name`, or `service_principal_name`.
   EOT
 
   type    = any

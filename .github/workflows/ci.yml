@@ -28,6 +28,7 @@ jobs:
         with:
           config-file: .terraform-docs.yml
           fail-on-diff: "true"
+          output-format: ""
           output-method: ""
           working-dir: >-
             .,modules/catalog,modules/cluster_policy,modules/external_location,
