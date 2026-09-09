@@ -82,6 +82,31 @@ This uses the real provider against DataTF's fake API. Require imports only in b
 Use the separate infra-private Azure lifecycle for cloud authentication, actual API behavior,
 import apply, post-import drift checks, repeat exports, and cleanup verification.
 
+## Release 1.0.0: 2026-09-09
+
+Workspace pattern `1.0.0` pins all ten Registry resource modules at `1.0.0`.
+Every resource module release is a documentation-only change from `0.1.0`.
+The pattern keeps its inputs, outputs, child module names, keys, and resource addresses.
+
+Release tags are lightweight tags. The Registry webhook ignores annotated tags: the first
+`v1.0.0` tags sat unpublished for fifteen minutes, and lightweight tags on the same commits
+published within twenty seconds.
+
+[Azure run 34370813241][release-workspace-run] tests the workspace layout and
+[Azure run 34370824920][release-resources-run] tests the resources layout. Both use infra-private
+commit `9fd59f695e17a10b43717520b23305347be870d2`, Terraform 1.16.1, and Databricks provider
+1.131.0 for the exported roots. The bootstrap uses provider 1.129.0. They check DataTF release
+`v1.0.0` at `a714abc4cf761dea6f9d03fea031a44a6bef1320` and workspace release `1.0.0` at
+`6b59592ba7551e217f2fc1872ec6b29f9b8ae7f6`.
+
+| Scope | Imports | Export report | Plan after import |
+| --- | ---: | --- | --- |
+| Workspace | 49 | Complete | No changes |
+| Shared | 5 | Complete | No changes |
+
+DataTF CI also imports the fake workspace through the published Registry chain in both layouts and
+both scopes. All four plans are import-only, and the plans after import report no changes.
+
 ## Resource module extraction: 2026-09-07
 
 Workspace pattern `0.2.0` pins all ten Registry resource modules at `0.1.0`.
@@ -163,3 +188,5 @@ its own complete export, reviewed import-only plan, and state backup.
 [dependabot]: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
 [cloud-run]: https://github.com/536tech/infra-private/actions/runs/34063680888
 [extraction-run]: https://github.com/536tech/infra-private/actions/runs/34169326942
+[release-workspace-run]: https://github.com/536tech/infra-private/actions/runs/34370813241
+[release-resources-run]: https://github.com/536tech/infra-private/actions/runs/34370824920
