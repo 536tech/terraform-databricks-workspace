@@ -96,8 +96,10 @@ published within twenty seconds.
 [Azure run 34370824920][release-resources-run] tests the resources layout. Both use infra-private
 commit `9fd59f695e17a10b43717520b23305347be870d2`, Terraform 1.16.1, and Databricks provider
 1.131.0 for the exported roots. The bootstrap uses provider 1.129.0. They check DataTF release
-`v1.0.0` at `a714abc4cf761dea6f9d03fea031a44a6bef1320` and workspace release `1.0.0` at
-`6b59592ba7551e217f2fc1872ec6b29f9b8ae7f6`.
+`v1.0.2` at `97eabfc54b19eb33ac0e01941629a7a09e699fe6` and workspace release `1.0.0` at
+`6b59592ba7551e217f2fc1872ec6b29f9b8ae7f6`. The DataTF repository was recreated before general
+availability, so its `1.0.0` and `1.0.1` releases no longer exist. The exported roots and import
+addresses are unchanged.
 
 | Scope | Imports | Export report | Plan after import |
 | --- | ---: | --- | --- |
