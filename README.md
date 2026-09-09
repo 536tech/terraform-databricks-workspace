@@ -24,7 +24,7 @@ provider "databricks" {}
 
 module "workspace" {
   source  = "536tech/workspace/databricks"
-  version = "0.2.0"
+  version = "1.0.0"
 
   catalogs = {
     sales = {
@@ -67,16 +67,16 @@ implementation until a pattern release selects and tests that version.
 
 | Child module | Registry module | Pinned version |
 | --- | --- | --- |
-| `catalog` | [536tech/catalog/databricks](https://registry.terraform.io/modules/536tech/catalog/databricks/0.1.0) | `0.1.0` |
-| `schema` | [536tech/schema/databricks](https://registry.terraform.io/modules/536tech/schema/databricks/0.1.0) | `0.1.0` |
-| `storage_credential` | [536tech/storage-credential/databricks](https://registry.terraform.io/modules/536tech/storage-credential/databricks/0.1.0) | `0.1.0` |
-| `external_location` | [536tech/external-location/databricks](https://registry.terraform.io/modules/536tech/external-location/databricks/0.1.0) | `0.1.0` |
-| `workspace_binding` | [536tech/workspace-binding/databricks](https://registry.terraform.io/modules/536tech/workspace-binding/databricks/0.1.0) | `0.1.0` |
-| `cluster_policy` | [536tech/cluster-policy/databricks](https://registry.terraform.io/modules/536tech/cluster-policy/databricks/0.1.0) | `0.1.0` |
-| `instance_pool` | [536tech/instance-pool/databricks](https://registry.terraform.io/modules/536tech/instance-pool/databricks/0.1.0) | `0.1.0` |
-| `warehouse` | [536tech/sql-warehouse/databricks](https://registry.terraform.io/modules/536tech/sql-warehouse/databricks/0.1.0) | `0.1.0` |
-| `secret_scope` | [536tech/secret-scope/databricks](https://registry.terraform.io/modules/536tech/secret-scope/databricks/0.1.0) | `0.1.0` |
-| `service_principal` | [536tech/service-principal/databricks](https://registry.terraform.io/modules/536tech/service-principal/databricks/0.1.0) | `0.1.0` |
+| `catalog` | [536tech/catalog/databricks](https://registry.terraform.io/modules/536tech/catalog/databricks/1.0.0) | `1.0.0` |
+| `schema` | [536tech/schema/databricks](https://registry.terraform.io/modules/536tech/schema/databricks/1.0.0) | `1.0.0` |
+| `storage_credential` | [536tech/storage-credential/databricks](https://registry.terraform.io/modules/536tech/storage-credential/databricks/1.0.0) | `1.0.0` |
+| `external_location` | [536tech/external-location/databricks](https://registry.terraform.io/modules/536tech/external-location/databricks/1.0.0) | `1.0.0` |
+| `workspace_binding` | [536tech/workspace-binding/databricks](https://registry.terraform.io/modules/536tech/workspace-binding/databricks/1.0.0) | `1.0.0` |
+| `cluster_policy` | [536tech/cluster-policy/databricks](https://registry.terraform.io/modules/536tech/cluster-policy/databricks/1.0.0) | `1.0.0` |
+| `instance_pool` | [536tech/instance-pool/databricks](https://registry.terraform.io/modules/536tech/instance-pool/databricks/1.0.0) | `1.0.0` |
+| `warehouse` | [536tech/sql-warehouse/databricks](https://registry.terraform.io/modules/536tech/sql-warehouse/databricks/1.0.0) | `1.0.0` |
+| `secret_scope` | [536tech/secret-scope/databricks](https://registry.terraform.io/modules/536tech/secret-scope/databricks/1.0.0) | `1.0.0` |
+| `service_principal` | [536tech/service-principal/databricks](https://registry.terraform.io/modules/536tech/service-principal/databricks/1.0.0) | `1.0.0` |
 
 Use a resource module directly when you need one component. Use this pattern for DataTF exports
 or a complete set of supported workspace settings. Configure providers and state in the calling root.
@@ -432,6 +432,6 @@ Description: Managed workspace bindings. Key = provider import ID; value = resou
 [Apache-2.0][license].
 
 [auth]: https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth/unified-auth
-[adoption]: https://github.com/536tech/terraform-databricks-workspace/blob/v0.2.0/docs/adoption.md
-[validation]: https://github.com/536tech/terraform-databricks-workspace/blob/v0.2.0/docs/validation.md
-[license]: https://github.com/536tech/terraform-databricks-workspace/blob/v0.2.0/LICENSE
+[adoption]: https://github.com/536tech/terraform-databricks-workspace/blob/v1.0.0/docs/adoption.md
+[validation]: https://github.com/536tech/terraform-databricks-workspace/blob/v1.0.0/docs/validation.md
+[license]: https://github.com/536tech/terraform-databricks-workspace/blob/v1.0.0/LICENSE
