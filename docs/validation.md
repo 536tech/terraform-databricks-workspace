@@ -92,9 +92,9 @@ Release tags are lightweight tags. The Registry webhook ignores annotated tags: 
 `v1.0.0` tags sat unpublished for fifteen minutes, and lightweight tags on the same commits
 published within twenty seconds.
 
-[Azure run 34370813241][release-workspace-run] tests the workspace layout and
-[Azure run 34370824920][release-resources-run] tests the resources layout. Both use infra-private
-commit `9fd59f695e17a10b43717520b23305347be870d2`, Terraform 1.16.1, and Databricks provider
+[Azure run 34402707164][release-workspace-run] tests the workspace layout and
+[Azure run 34402718112][release-resources-run] tests the resources layout. Both use infra-private
+commit `c7f096f`, Terraform 1.16.1, and Databricks provider
 1.131.0 for the exported roots. The bootstrap uses provider 1.129.0. They check DataTF release
 `v1.0.2` at `97eabfc54b19eb33ac0e01941629a7a09e699fe6` and workspace release `1.0.0` at
 `6b59592ba7551e217f2fc1872ec6b29f9b8ae7f6`. The DataTF repository was recreated before general
@@ -190,5 +190,5 @@ its own complete export, reviewed import-only plan, and state backup.
 [dependabot]: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
 [cloud-run]: https://github.com/536tech/infra-private/actions/runs/34063680888
 [extraction-run]: https://github.com/536tech/infra-private/actions/runs/34169326942
-[release-workspace-run]: https://github.com/536tech/infra-private/actions/runs/34370813241
-[release-resources-run]: https://github.com/536tech/infra-private/actions/runs/34370824920
+[release-workspace-run]: https://github.com/536tech/infra-private/actions/runs/34402707164
+[release-resources-run]: https://github.com/536tech/infra-private/actions/runs/34402718112
