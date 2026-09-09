@@ -1,6 +1,6 @@
 module "catalog" {
   source   = "536tech/catalog/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.catalogs
 
   name           = each.key
@@ -15,7 +15,7 @@ module "catalog" {
 
 module "schema" {
   source   = "536tech/schema/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = local.schemas
 
   catalog_name  = each.value.catalog_name
@@ -30,7 +30,7 @@ module "schema" {
 
 module "storage_credential" {
   source   = "536tech/storage-credential/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.storage_credentials
 
   name                   = each.key
@@ -45,7 +45,7 @@ module "storage_credential" {
 
 module "external_location" {
   source   = "536tech/external-location/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.external_locations
 
   name               = each.key
@@ -65,7 +65,7 @@ module "external_location" {
 
 module "workspace_binding" {
   source   = "536tech/workspace-binding/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.workspace_bindings
 
   workspace_id   = each.value.workspace_id
@@ -78,7 +78,7 @@ module "workspace_binding" {
 
 module "cluster_policy" {
   source   = "536tech/cluster-policy/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.cluster_policies
 
   name                               = each.key
@@ -93,7 +93,7 @@ module "cluster_policy" {
 
 module "instance_pool" {
   source   = "536tech/instance-pool/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.instance_pools
 
   name                                  = each.key
@@ -110,7 +110,7 @@ module "instance_pool" {
 
 module "warehouse" {
   source   = "536tech/sql-warehouse/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.warehouses
 
   name                      = each.key
@@ -128,7 +128,7 @@ module "warehouse" {
 
 module "secret_scope" {
   source   = "536tech/secret-scope/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.secret_scopes
 
   name              = each.key
@@ -138,7 +138,7 @@ module "secret_scope" {
 
 module "service_principal" {
   source   = "536tech/service-principal/databricks"
-  version  = "0.1.0"
+  version  = "1.0.0"
   for_each = var.service_principals
 
   name                       = each.key

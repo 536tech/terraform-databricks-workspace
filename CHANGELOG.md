@@ -9,6 +9,14 @@ Module instance names, `for_each` keys, and the count-gated `[0]` indexes are pa
 interface, because datatf import addresses point at them. A change to any of them is a breaking
 change.
 
+## [1.0.0] - 2026-09-09
+
+### Changed
+
+- Pin all ten Registry resource modules to 1.0.0.
+- Declare the pattern contract stable. The inputs, outputs, child module names, keys, and
+  DataTF import addresses are unchanged from 0.2.0.
+
 ## [0.2.0] - 2026-09-07
 
 ### Changed

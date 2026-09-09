@@ -1,7 +1,7 @@
 # Adopt an existing workspace
 
 `datatf export --scaffold` creates a Terraform root. Select this Registry release with
-`--module-source 536tech/workspace/databricks --module-version 0.2.0`.
+`--module-source 536tech/workspace/databricks --module-version 1.0.0`.
 The import workflow and mock tests require Terraform 1.7 or later.
 The reusable module alone requires Terraform 1.5 or later.
 
@@ -81,6 +81,15 @@ Service principal keys are readable aliases. The root module resolves managed al
 service principal outputs. It resolves external aliases from `external_service_principals`.
 The root passes resolved grant lists and permission lists to the child modules. Names that are
 not aliases pass through unchanged for users and groups.
+
+## Upgrade from 0.2.0
+
+Version 1.0.0 pins all ten Registry resource modules at `1.0.0`. The pattern keeps its inputs,
+outputs, child module names, keys, and resource addresses. Change the pattern version to `1.0.0`,
+run `terraform init`, and require a plan with no resource changes. No state move is needed.
+
+From 1.0.0, semantic versioning covers the module contract. A change to any input, output,
+module instance name, `for_each` key, or resource address is a major version bump.
 
 ## Upgrade from 0.1.1
 
