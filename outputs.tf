@@ -1,19 +1,41 @@
 output "catalog_ids" {
+  precondition {
+    condition     = length(setsubtract(toset(keys(var.catalog_access)), toset(keys(var.catalogs)))) == 0
+    error_message = "Every catalog_access key must name an object in catalogs."
+  }
+
   description = "Managed catalogs. Key = catalog name; value = catalog id."
   value       = { for name, m in module.catalog : name => m.id }
 }
 
 output "schema_ids" {
+  precondition {
+    condition = alltrue(flatten([for catalog, schemas in var.schema_access : [
+      for schema, grants in schemas : contains(try(var.schemas[catalog], []), schema)
+    ]]))
+    error_message = "Every schema_access target must name a schema in schemas."
+  }
+
   description = "Managed schemas. Key = `catalog.schema`; value = schema id."
   value       = { for key, m in module.schema : key => m.id }
 }
 
 output "storage_credential_ids" {
+  precondition {
+    condition     = length(setsubtract(toset(keys(var.storage_credential_access)), toset(keys(var.storage_credentials)))) == 0
+    error_message = "Every storage_credential_access key must name an object in storage_credentials."
+  }
+
   description = "Managed storage credentials. Key = credential name; value = credential id."
   value       = { for name, m in module.storage_credential : name => m.id }
 }
 
 output "external_location_ids" {
+  precondition {
+    condition     = length(setsubtract(toset(keys(var.external_location_access)), toset(keys(var.external_locations)))) == 0
+    error_message = "Every external_location_access key must name an object in external_locations."
+  }
+
   description = "Managed external locations. Key = location name; value = location id."
   value       = { for name, m in module.external_location : name => m.id }
 }
