@@ -146,3 +146,35 @@ run "binding_accepts_read_only_catalog" {
     }
   }
 }
+
+run "reject_orphan_catalog_access" {
+  command = plan
+  variables {
+    catalog_access = { missing = { readers = ["USE_CATALOG"] } }
+  }
+  expect_failures = [output.catalog_ids]
+}
+
+run "reject_orphan_schema_access" {
+  command = plan
+  variables {
+    schema_access = { missing = { bronze = { readers = ["SELECT"] } } }
+  }
+  expect_failures = [output.schema_ids]
+}
+
+run "reject_orphan_storage_credential_access" {
+  command = plan
+  variables {
+    storage_credential_access = { missing = { readers = ["ALL_PRIVILEGES"] } }
+  }
+  expect_failures = [output.storage_credential_ids]
+}
+
+run "reject_orphan_external_location_access" {
+  command = plan
+  variables {
+    external_location_access = { missing = { readers = ["READ_FILES"] } }
+  }
+  expect_failures = [output.external_location_ids]
+}

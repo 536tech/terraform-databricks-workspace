@@ -45,6 +45,15 @@ Review that implicit binding when you create resources. See [the binding resourc
 The module is suitable for the supported platform subset of a workspace. A second shared module
 is not required. Separate roots and states express ownership without changing DataTF addresses.
 
+## Grant target checks
+
+Output preconditions reject access entries that name undeclared catalogs, schemas, storage credentials, or external locations.
+These checks also run when the resource maps are empty. They prevent misspelled targets from disappearing silently.
+They preserve Terraform 1.5 support and add no resources or import addresses.
+
+Resource-level input guards live in the individual module repositories.
+This pattern uses exact released versions. Release those module changes before advancing the pins in `main.tf`.
+
 ## Repeatable checks
 
 PR checks run without Azure credentials, Databricks credentials, or a private repository token.
