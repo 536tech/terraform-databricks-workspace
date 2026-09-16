@@ -9,6 +9,12 @@ Module instance names, `for_each` keys, and the count-gated `[0]` indexes are pa
 interface, because datatf import addresses point at them. A change to any of them is a breaking
 change.
 
+## [1.0.1] - 2026-09-16
+
+- Pin all ten resource modules to 1.0.1 with input and permission validation.
+- Reject grant entries that refer to unknown catalog, schema, credential, or location keys.
+- Preserve existing resource addresses and valid input behavior.
+
 ## [1.0.0] - 2026-09-09
 
 ### Changed
